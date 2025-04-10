@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DashboardLayout from "../dashboard/layout/DashboardLayout-pt";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,15 +18,43 @@ import {
   ChevronRight,
   CheckCircle,
   AlertCircle,
+  Users,
 } from "lucide-react";
 import DocumentsGrid from "../dashboard/DocumentsGrid";
 import ContractsGrid from "../dashboard/ContractsGrid";
 import VaultGrid from "../dashboard/VaultGrid";
+import AffiliateDashboard from "../dashboard/AffiliateDashboard";
 import { useAuth } from "../../../supabase/auth";
+import { supabase } from "../../../supabase/supabase";
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("resumo");
+  const [isAffiliate, setIsAffiliate] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const checkAffiliateStatus = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("is_affiliate")
+          .eq("id", user.id)
+          .single();
+
+        if (error) throw error;
+        setIsAffiliate(data?.is_affiliate || false);
+      } catch (error) {
+        console.error("Error checking affiliate status:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAffiliateStatus();
+  }, [user]);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -47,7 +75,7 @@ const Dashboard = () => {
         onValueChange={handleTabChange}
         className="w-full"
       >
-        <TabsList className="bg-white/90 backdrop-blur-md border border-gray-200 rounded-xl p-1 mb-6">
+        <TabsList className="bg-white/90 backdrop-blur-md border border-gray-200 rounded-xl p-1 mb-6 overflow-x-auto flex-nowrap">
           <TabsTrigger
             value="resumo"
             className="rounded-lg data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 py-2.5"
@@ -72,6 +100,14 @@ const Dashboard = () => {
           >
             Cofre Digital
           </TabsTrigger>
+          {isAffiliate && (
+            <TabsTrigger
+              value="afiliados"
+              className="rounded-lg data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 py-2.5"
+            >
+              Programa de Afiliados
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="resumo" className="space-y-6">
@@ -525,6 +561,12 @@ const Dashboard = () => {
         <TabsContent value="cofre">
           <VaultGrid />
         </TabsContent>
+
+        {isAffiliate && (
+          <TabsContent value="afiliados">
+            <AffiliateDashboard />
+          </TabsContent>
+        )}
       </Tabs>
     </DashboardLayout>
   );

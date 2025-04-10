@@ -108,6 +108,14 @@ export function SiteFooter() {
               </li>
               <li>
                 <Link
+                  to="/afiliados"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  Programa de Afiliados
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/gamificacao"
                   className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
@@ -144,6 +152,14 @@ export function SiteFooter() {
                   className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Termos
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/termos-afiliados"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  Termos para Afiliados
                 </Link>
               </li>
               <li>

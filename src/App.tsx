@@ -11,6 +11,7 @@ import FuncionalidadesPt from "./components/pages/funcionalidades-pt";
 import BenefitsPackagePt from "./components/pages/benefits-package-pt";
 import ContatoPt from "./components/pages/contato-pt";
 import QuemSomosPt from "./components/pages/quem-somos-pt";
+import AffiliateProgramPt from "./components/pages/affiliate-program-pt";
 import { AuthProvider, useAuth } from "../supabase/auth";
 import { Toaster } from "./components/ui/toaster";
 import { LoadingScreen, LoadingSpinner } from "./components/ui/loading-spinner";
@@ -41,6 +42,7 @@ function AppRoutes() {
         <Route path="/beneficios" element={<BenefitsPackagePt />} />
         <Route path="/contato" element={<ContatoPt />} />
         <Route path="/quem-somos" element={<QuemSomosPt />} />
+        <Route path="/afiliados" element={<AffiliateProgramPt />} />
         <Route
           path="/dashboard"
           element={

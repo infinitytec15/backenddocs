@@ -13,7 +13,11 @@ import {
   Users,
   Award,
   CreditCard,
+  Link as LinkIcon,
 } from "lucide-react";
+import { useAuth } from "../../../../supabase/auth";
+import { useEffect, useState } from "react";
+import { supabase } from "../../../../supabase/supabase";
 
 interface NavItem {
   icon: React.ReactNode;
@@ -48,6 +52,39 @@ const Sidebar = ({
   activeItem = "Início",
   onItemClick = () => {},
 }: SidebarProps) => {
+  const { user } = useAuth();
+  const [isAffiliate, setIsAffiliate] = useState(false);
+  const [navItems, setNavItems] = useState(items);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const checkAffiliateStatus = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("is_affiliate")
+          .eq("id", user.id)
+          .single();
+
+        if (error) throw error;
+
+        if (data?.is_affiliate) {
+          setIsAffiliate(true);
+          // Add affiliate item to nav items if user is an affiliate
+          setNavItems([
+            ...items.slice(0, 6), // First 6 items
+            { icon: <LinkIcon size={20} />, label: "Programa de Afiliados" },
+            ...items.slice(6), // Remaining items
+          ]);
+        }
+      } catch (error) {
+        console.error("Error checking affiliate status:", error);
+      }
+    };
+
+    checkAffiliateStatus();
+  }, [user, items]);
   return (
     <div className="w-[280px] h-full bg-white/80 backdrop-blur-md border-r border-gray-200 flex flex-col">
       <div className="p-6">
@@ -61,7 +98,7 @@ const Sidebar = ({
 
       <ScrollArea className="flex-1 px-4">
         <div className="space-y-1.5">
-          {items.map((item) => (
+          {navItems.map((item) => (
             <Button
               key={item.label}
               variant={"ghost"}
