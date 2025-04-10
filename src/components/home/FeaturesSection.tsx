@@ -32,11 +32,25 @@ function FeatureCard({
   iconColor,
   index,
   iconType = "document",
-  use3DIcon = true,
+  use3DIcon = false, // Default to false to avoid WebGL errors
 }: FeatureCardProps) {
+  const [canUse3D, setCanUse3D] = useState(false);
+
+  useEffect(() => {
+    // Check if WebGL is supported
+    try {
+      const canvas = document.createElement("canvas");
+      const gl =
+        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      setCanUse3D(!!gl);
+    } catch (e) {
+      setCanUse3D(false);
+    }
+  }, []);
+
   return (
     <div className="feature-card scroll-fade-in bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:translate-y-[-5px]">
-      {use3DIcon ? (
+      {use3DIcon && canUse3D ? (
         <div className="h-24 w-24 mb-5 mx-auto">
           <FeatureIconScene
             iconType={iconType}
@@ -191,7 +205,7 @@ export function FeaturesSection() {
               iconColor={feature.iconColor}
               index={index}
               iconType={feature.iconType}
-              use3DIcon={true}
+              use3DIcon={false}
             />
           ))}
         </div>

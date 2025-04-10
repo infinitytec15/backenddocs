@@ -54,13 +54,13 @@ export function PlansSection() {
   const getPrice = (plan: Plan) => {
     switch (billingPeriod) {
       case "monthly":
-        return `R${plan.price_monthly}`;
+        return `R$${plan.price_monthly}`;
       case "semiannual":
-        return `R${plan.price_semiannual}`;
+        return `R$${plan.price_semiannual}`;
       case "annual":
-        return `R${plan.price_annual}`;
+        return `R$${plan.price_annual}`;
       default:
-        return `R${plan.price_monthly}`;
+        return `R$${plan.price_monthly}`;
     }
   };
 

@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { IconScene } from "./3d/IconScene";
+import { Shield, Lock, FileCheck } from "lucide-react";
 import gsap from "gsap";
 
 export function HeroSection() {
@@ -34,8 +35,8 @@ export function HeroSection() {
         ease: "power3.out",
       });
 
-      // Animação dos cards de funcionalidades com stagger otimizado
-      gsap.from(".feature-card", {
+      // Animação dos destaques
+      gsap.from(".hero-highlight", {
         opacity: 0,
         y: 20,
         duration: 0.6,
@@ -55,19 +56,22 @@ export function HeroSection() {
     >
       <div className="container px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
         {/* Header principal moderno */}
-        <div className="max-w-3xl mx-auto text-center relative z-10 mb-16">
+        <div className="max-w-3xl mx-auto text-center relative z-10 mb-12">
           <h1 className="hero-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 gradient-text">
-            Documentos e Contratos Seguros em um Só Lugar
+            <span className="block">Documentos e Contratos</span>
+            <span className="block text-brand-600 dark:text-brand-400">
+              100% Seguros e Legais
+            </span>
           </h1>
           <p className="hero-subtitle text-lg sm:text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-6 sm:mb-8 max-w-2xl mx-auto">
-            Gerencie, proteja e assine seus documentos com segurança e
-            simplicidade. A solução completa para profissionais e empresas no
-            Brasil.
+            <strong>A plataforma completa</strong> para gerenciar, proteger e
+            assinar seus documentos com segurança e simplicidade.{" "}
+            <strong>Ideal para profissionais e empresas no Brasil.</strong>
           </p>
-          <div className="hero-buttons flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+          <div className="hero-buttons flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-8">
             <Link to="/signup">
-              <Button className="btn-primary text-sm sm:text-base h-10 sm:h-12 w-full sm:w-auto px-4 sm:px-6">
-                Começar Gratuitamente
+              <Button className="btn-primary text-sm sm:text-base h-10 sm:h-12 w-full sm:w-auto px-6 sm:px-8 text-lg">
+                Começar Agora Mesmo
               </Button>
             </Link>
             <Link to="/funcionalidades">
@@ -75,10 +79,35 @@ export function HeroSection() {
                 variant="outline"
                 className="text-sm sm:text-base h-10 sm:h-12 rounded-full w-full sm:w-auto px-4 sm:px-6"
               >
-                Conhecer Funcionalidades
+                Ver Demonstração
               </Button>
             </Link>
           </div>
+
+          {/* Destaques */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mt-8">
+            <div className="hero-highlight flex items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-3 rounded-lg shadow-sm">
+              <div className="bg-brand-100 dark:bg-brand-900/30 p-2 rounded-full mr-3">
+                <Shield className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+              </div>
+              <span className="text-sm font-medium">
+                Certificado ICP-Brasil
+              </span>
+            </div>
+            <div className="hero-highlight flex items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-3 rounded-lg shadow-sm">
+              <div className="bg-brand-100 dark:bg-brand-900/30 p-2 rounded-full mr-3">
+                <Lock className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+              </div>
+              <span className="text-sm font-medium">Criptografia Avançada</span>
+            </div>
+            <div className="hero-highlight flex items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-3 rounded-lg shadow-sm">
+              <div className="bg-brand-100 dark:bg-brand-900/30 p-2 rounded-full mr-3">
+                <FileCheck className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+              </div>
+              <span className="text-sm font-medium">Validade Jurídica</span>
+            </div>
+          </div>
+
           <div className="absolute -z-10 w-96 h-96 bg-gradient-to-r from-brand-200/30 to-cyan-200/30 rounded-full blur-3xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
         </div>
 

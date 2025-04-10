@@ -1,53 +1,26 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "./ThemeToggle";
-import { Menu, X } from "lucide-react";
-
-// Hook personalizado para lidar com o evento de rolagem
-function useScrollPosition() {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  // Usando useCallback para memoizar a função
-  const handleScroll = useCallback(() => {
-    // Verificar se estamos no navegador
-    if (typeof window === "undefined") return;
-
-    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-    setIsScrolled(scrollPosition > 10);
-  }, []);
-
-  // Efeito para adicionar/remover o listener
-  useEffect(() => {
-    // Verificação de segurança para SSR
-    if (typeof window === "undefined") return;
-
-    // Verificação inicial
-    handleScroll();
-
-    // Adicionar listener com tratamento de erro
-    try {
-      window.addEventListener("scroll", handleScroll, { passive: true });
-    } catch (e) {
-      console.error("Erro ao adicionar evento de scroll:", e);
-    }
-
-    // Cleanup function
-    return () => {
-      try {
-        window.removeEventListener("scroll", handleScroll);
-      } catch (e) {
-        console.error("Erro ao remover evento de scroll:", e);
-      }
-    };
-  }, [handleScroll]);
-
-  return isScrolled;
-}
+import { Menu, X, Moon, Sun } from "lucide-react";
 
 export function SiteHeader() {
-  const isScrolled = useScrollPosition();
+  // Simplificando para evitar problemas com window
+  const [isScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  // Função para alternar o tema diretamente
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+
+    // Aplicar classe no documento
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   return (
     <header
@@ -97,7 +70,20 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center space-x-4">
-            <ThemeToggle />
+            {/* Botão de tema fixo */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              onClick={toggleTheme}
+            >
+              {theme === "light" ? (
+                <Moon className="h-5 w-5" />
+              ) : (
+                <Sun className="h-5 w-5" />
+              )}
+            </Button>
+
             <div className="hidden md:flex space-x-3">
               <Link to="/login">
                 <Button variant="outline" className="rounded-full">

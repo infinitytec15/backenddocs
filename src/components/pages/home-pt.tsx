@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { HeroSection } from "@/components/home/HeroSection";
-import { BenefitsSection } from "@/components/home/BenefitsSection";
+import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { PlansSection } from "@/components/home/PlansSection";
 import { CtaSection } from "@/components/home/CtaSection";
@@ -24,8 +24,8 @@ export default function PaginaInicial() {
   return (
     <SiteLayout>
       <HeroSection />
+      <HowItWorksSection />
       <FeaturesSection />
-      <BenefitsSection />
       <PlansSection />
       <CtaSection />
     </SiteLayout>
