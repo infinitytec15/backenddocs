@@ -1,40 +1,32 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import {
-  SparklesIcon,
-  RocketIcon,
-  StarIcon,
-  CrownIcon,
-  MessageIcon,
-} from "./PlanIcons";
+import { DocumentIcon, ShieldIcon, KeyIcon, GearIcon } from "./FeatureIcons";
 
-type IconSceneProps = {
-  iconType: "sparkles" | "rocket" | "star" | "crown" | "message";
+type FeatureIconSceneProps = {
+  iconType: "document" | "shield" | "key" | "gear";
   color: string;
   className?: string;
   interactive?: boolean;
 };
 
-export function IconScene({
+export function FeatureIconScene({
   iconType,
   color,
   className = "",
   interactive = false,
-}: IconSceneProps) {
+}: FeatureIconSceneProps) {
   const getIcon = () => {
     switch (iconType) {
-      case "sparkles":
-        return <SparklesIcon color={color} />;
-      case "rocket":
-        return <RocketIcon color={color} />;
-      case "star":
-        return <StarIcon color={color} />;
-      case "crown":
-        return <CrownIcon color={color} />;
-      case "message":
-        return <MessageIcon color={color} />;
+      case "document":
+        return <DocumentIcon color={color} />;
+      case "shield":
+        return <ShieldIcon color={color} />;
+      case "key":
+        return <KeyIcon color={color} />;
+      case "gear":
+        return <GearIcon color={color} />;
       default:
-        return <SparklesIcon color={color} />;
+        return <DocumentIcon color={color} />;
     }
   };
 

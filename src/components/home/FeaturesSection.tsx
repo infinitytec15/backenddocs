@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FileText,
   FileSignature,
@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { FeatureIconScene } from "./3d/FeatureIconScene";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +20,8 @@ interface FeatureCardProps {
   iconBg: string;
   iconColor: string;
   index: number;
+  iconType?: "document" | "shield" | "key" | "gear";
+  use3DIcon?: boolean;
 }
 
 function FeatureCard({
@@ -28,14 +31,25 @@ function FeatureCard({
   iconBg,
   iconColor,
   index,
+  iconType = "document",
+  use3DIcon = true,
 }: FeatureCardProps) {
   return (
     <div className="feature-card scroll-fade-in bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
-      <div
-        className={`h-14 w-14 rounded-xl flex items-center justify-center mb-4 ${iconBg}`}
-      >
-        <div className={`${iconColor}`}>{icon}</div>
-      </div>
+      {use3DIcon ? (
+        <div className="h-20 w-20 mb-4">
+          <FeatureIconScene
+            iconType={iconType}
+            color={iconColor.replace("text-", "")}
+          />
+        </div>
+      ) : (
+        <div
+          className={`h-14 w-14 rounded-xl flex items-center justify-center mb-4 ${iconBg}`}
+        >
+          <div className={`${iconColor}`}>{icon}</div>
+        </div>
+      )}
       <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">
         {title}
       </h3>
@@ -46,8 +60,12 @@ function FeatureCard({
 
 export function FeaturesSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
+    // Ensure component stays visible
+    setIsVisible(true);
+
     const ctx = gsap.context(() => {
       // Animação do título da seção
       gsap.from(".features-title", {
@@ -86,6 +104,7 @@ export function FeaturesSection() {
         "Organize, armazene e acesse seus documentos com facilidade e segurança.",
       iconBg: "bg-blue-100 dark:bg-blue-900/30",
       iconColor: "text-blue-600 dark:text-blue-400",
+      iconType: "document",
     },
     {
       icon: <FileSignature size={28} />,
@@ -94,6 +113,7 @@ export function FeaturesSection() {
         "Crie e gerencie contratos dinâmicos com preenchimento automático e assinatura digital.",
       iconBg: "bg-purple-100 dark:bg-purple-900/30",
       iconColor: "text-purple-600 dark:text-purple-400",
+      iconType: "document",
     },
     {
       icon: <Lock size={28} />,
@@ -102,6 +122,7 @@ export function FeaturesSection() {
         "Proteja seus documentos mais importantes com criptografia avançada.",
       iconBg: "bg-green-100 dark:bg-green-900/30",
       iconColor: "text-green-600 dark:text-green-400",
+      iconType: "shield",
     },
     {
       icon: <Award size={28} />,
@@ -110,6 +131,7 @@ export function FeaturesSection() {
         "Ganhe pontos e recompensas enquanto utiliza o sistema de forma eficiente.",
       iconBg: "bg-yellow-100 dark:bg-yellow-900/30",
       iconColor: "text-yellow-600 dark:text-yellow-400",
+      iconType: "key",
     },
     {
       icon: <Users size={28} />,
@@ -118,6 +140,7 @@ export function FeaturesSection() {
         "Compartilhe documentos e contratos com sua equipe e defina permissões de acesso.",
       iconBg: "bg-red-100 dark:bg-red-900/30",
       iconColor: "text-red-600 dark:text-red-400",
+      iconType: "key",
     },
     {
       icon: <Settings size={28} />,
@@ -126,8 +149,15 @@ export function FeaturesSection() {
         "Adapte o sistema às necessidades específicas do seu negócio com opções flexíveis.",
       iconBg: "bg-indigo-100 dark:bg-indigo-900/30",
       iconColor: "text-indigo-600 dark:text-indigo-400",
+      iconType: "gear",
     },
   ];
+
+  if (!isVisible) {
+    return (
+      <div className="min-h-[600px] bg-gradient-to-b from-white via-gray-50 to-white dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900"></div>
+    );
+  }
 
   return (
     <section ref={sectionRef} className="section-padding">
@@ -152,6 +182,8 @@ export function FeaturesSection() {
               iconBg={feature.iconBg}
               iconColor={feature.iconColor}
               index={index}
+              iconType={feature.iconType}
+              use3DIcon={true}
             />
           ))}
         </div>

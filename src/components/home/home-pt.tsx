@@ -3,6 +3,7 @@ import { SiteLayout } from "@/components/layout/SiteLayout";
 import { HeroSection } from "@/components/home/HeroSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
+import { MainFeaturesSection } from "@/components/home/MainFeaturesSection";
 import { PlansSection } from "@/components/home/PlansSection";
 import { CtaSection } from "@/components/home/CtaSection";
 import { useAuth } from "../../../supabase/auth";
@@ -24,8 +25,9 @@ export default function PaginaInicial() {
   return (
     <SiteLayout>
       <HeroSection />
-      <FeaturesSection />
+      <MainFeaturesSection />
       <BenefitsSection />
+      <FeaturesSection />
       <PlansSection />
       <CtaSection />
     </SiteLayout>
