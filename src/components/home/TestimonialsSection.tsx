@@ -1,10 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface Testimonial {
   id: number;
@@ -17,7 +12,6 @@ interface Testimonial {
 }
 
 export function TestimonialsSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const testimonials: Testimonial[] = [
@@ -63,34 +57,6 @@ export function TestimonialsSection() {
     },
   ];
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".testimonials-title", {
-        scrollTrigger: {
-          trigger: ".testimonials-title",
-          start: "top 80%",
-        },
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-
-      gsap.from(".testimonial-card", {
-        scrollTrigger: {
-          trigger: ".testimonial-card",
-          start: "top 70%",
-        },
-        opacity: 0,
-        y: 50,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   const nextTestimonial = () => {
     setActiveIndex((prev) => (prev + 1) % testimonials.length);
   };
@@ -102,13 +68,10 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section
-      ref={sectionRef}
-      className="py-16 md:py-24 bg-white dark:bg-gray-900"
-    >
-      <div className="container-custom">
+    <section className="py-16 md:py-24 bg-white dark:bg-gray-900">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="testimonials-title text-3xl md:text-4xl font-bold mb-6 gradient-text">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-white">
             O Que Nossos Clientes Dizem
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300">
@@ -118,13 +81,9 @@ export function TestimonialsSection() {
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4">
-          <motion.div
+          <div
             key={activeIndex}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.5 }}
-            className="testimonial-card bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700"
+            className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700"
           >
             <div className="flex items-center mb-6">
               <div className="mr-4">
@@ -160,7 +119,7 @@ export function TestimonialsSection() {
             <blockquote className="text-lg text-gray-700 dark:text-gray-300 italic mb-4">
               "{testimonials[activeIndex].content}"
             </blockquote>
-          </motion.div>
+          </div>
 
           <div className="flex justify-center mt-8 gap-4">
             <button

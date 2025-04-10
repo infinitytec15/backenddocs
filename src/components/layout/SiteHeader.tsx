@@ -1,13 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Moon, Sun } from "lucide-react";
 
 export function SiteHeader() {
-  // Simplificando para evitar problemas com window
-  const [isScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  // Detectar scroll da página
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Verificar o scroll inicial
+    handleScroll();
+
+    // Limpar o event listener quando o componente for desmontado
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   // Função para alternar o tema diretamente
   const toggleTheme = () => {
@@ -24,7 +44,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${isScrolled ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm" : "bg-transparent"}`}
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${isScrolled ? "bg-white/85 dark:bg-gray-900/90 backdrop-blur-md shadow-sm" : "bg-transparent"}`}
     >
       <div className="container-custom">
         <div className="flex h-16 items-center justify-between">

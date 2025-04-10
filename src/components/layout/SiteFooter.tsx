@@ -4,10 +4,13 @@ import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 export function SiteFooter() {
   return (
     <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-      <div className="container-custom py-12 md:py-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
-            <Link to="/" className="font-bold text-2xl gradient-text">
+            <Link
+              to="/"
+              className="font-bold text-2xl text-blue-600 dark:text-blue-400"
+            >
               DocSafe Brasil
             </Link>
             <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-md">
@@ -17,25 +20,25 @@ export function SiteFooter() {
             <div className="flex space-x-4 mt-6">
               <a
                 href="#"
-                className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-brand-100 dark:hover:bg-brand-900 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 <Facebook size={20} />
               </a>
               <a
                 href="#"
-                className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-brand-100 dark:hover:bg-brand-900 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 <Twitter size={20} />
               </a>
               <a
                 href="#"
-                className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-brand-100 dark:hover:bg-brand-900 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 <Instagram size={20} />
               </a>
               <a
                 href="#"
-                className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-brand-100 dark:hover:bg-brand-900 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 <Linkedin size={20} />
               </a>
@@ -50,7 +53,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/sobre"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Quem Somos
                 </Link>
@@ -58,7 +61,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/contato"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Contato
                 </Link>
@@ -66,7 +69,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/carreiras"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Carreiras
                 </Link>
@@ -74,7 +77,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/imprensa"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Imprensa
                 </Link>
@@ -90,7 +93,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/funcionalidades"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Funcionalidades
                 </Link>
@@ -98,7 +101,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/planos"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Planos
                 </Link>
@@ -106,7 +109,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/gamificacao"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Gamificação
                 </Link>
@@ -114,7 +117,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/blog"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Blog
                 </Link>
@@ -130,7 +133,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/privacidade"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Privacidade
                 </Link>
@@ -138,7 +141,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/termos"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Termos
                 </Link>
@@ -146,7 +149,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/cookies"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Cookies
                 </Link>
@@ -154,7 +157,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/licencas"
-                  className="text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Licenças
                 </Link>

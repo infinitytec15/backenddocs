@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import {
   FileText,
   FileSignature,
@@ -7,11 +6,6 @@ import {
   Users,
   Settings,
 } from "lucide-react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { FeatureIconScene } from "./3d/FeatureIconScene";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -20,8 +14,6 @@ interface FeatureCardProps {
   iconBg: string;
   iconColor: string;
   index: number;
-  iconType?: "document" | "shield" | "key" | "gear";
-  use3DIcon?: boolean;
 }
 
 function FeatureCard({
@@ -30,43 +22,14 @@ function FeatureCard({
   description,
   iconBg,
   iconColor,
-  index,
-  iconType = "document",
-  use3DIcon = false, // Default to false to avoid WebGL errors
 }: FeatureCardProps) {
-  const [canUse3D, setCanUse3D] = useState(false);
-
-  useEffect(() => {
-    // Check if WebGL is supported
-    try {
-      const canvas = document.createElement("canvas");
-      const gl =
-        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-      setCanUse3D(!!gl);
-    } catch (e) {
-      setCanUse3D(false);
-    }
-  }, []);
-
   return (
-    <div className="feature-card scroll-fade-in bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:translate-y-[-5px]">
-      {use3DIcon && canUse3D ? (
-        <div className="h-24 w-24 mb-5 mx-auto">
-          <FeatureIconScene
-            iconType={iconType}
-            color={iconColor.replace("text-", "")}
-            className="cursor-pointer"
-            interactive={false}
-            scale={1.2}
-          />
-        </div>
-      ) : (
-        <div
-          className={`h-16 w-16 rounded-xl flex items-center justify-center mb-5 mx-auto ${iconBg}`}
-        >
-          <div className={`${iconColor}`}>{icon}</div>
-        </div>
-      )}
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:translate-y-[-5px]">
+      <div
+        className={`h-16 w-16 rounded-xl flex items-center justify-center mb-5 mx-auto ${iconBg}`}
+      >
+        <div className={`${iconColor}`}>{icon}</div>
+      </div>
       <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white text-center">
         {title}
       </h3>
@@ -78,43 +41,6 @@ function FeatureCard({
 }
 
 export function FeaturesSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    // Ensure component stays visible
-    setIsVisible(true);
-
-    const ctx = gsap.context(() => {
-      // Animação do título da seção
-      gsap.from(".features-title", {
-        scrollTrigger: {
-          trigger: ".features-title",
-          start: "top 80%",
-        },
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-
-      // Animação dos cards de recursos
-      gsap.from(".feature-card", {
-        scrollTrigger: {
-          trigger: ".features-grid",
-          start: "top 70%",
-        },
-        opacity: 0,
-        y: 50,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power2.out",
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   const features = [
     {
       icon: <FileText size={28} />,
@@ -123,7 +49,6 @@ export function FeaturesSection() {
         "Organize, armazene e acesse seus documentos com facilidade e segurança.",
       iconBg: "bg-blue-100 dark:bg-blue-900/30",
       iconColor: "text-blue-600 dark:text-blue-400",
-      iconType: "document",
     },
     {
       icon: <FileSignature size={28} />,
@@ -132,7 +57,6 @@ export function FeaturesSection() {
         "Crie e gerencie contratos dinâmicos com preenchimento automático e assinatura digital.",
       iconBg: "bg-purple-100 dark:bg-purple-900/30",
       iconColor: "text-purple-600 dark:text-purple-400",
-      iconType: "document",
     },
     {
       icon: <Lock size={28} />,
@@ -141,7 +65,6 @@ export function FeaturesSection() {
         "Proteja seus documentos mais importantes com criptografia avançada.",
       iconBg: "bg-green-100 dark:bg-green-900/30",
       iconColor: "text-green-600 dark:text-green-400",
-      iconType: "shield",
     },
     {
       icon: <Award size={28} />,
@@ -150,7 +73,6 @@ export function FeaturesSection() {
         "Ganhe pontos e recompensas enquanto utiliza o sistema de forma eficiente.",
       iconBg: "bg-yellow-100 dark:bg-yellow-900/30",
       iconColor: "text-yellow-600 dark:text-yellow-400",
-      iconType: "key",
     },
     {
       icon: <Users size={28} />,
@@ -159,7 +81,6 @@ export function FeaturesSection() {
         "Compartilhe documentos e contratos com sua equipe e defina permissões de acesso.",
       iconBg: "bg-red-100 dark:bg-red-900/30",
       iconColor: "text-red-600 dark:text-red-400",
-      iconType: "key",
     },
     {
       icon: <Settings size={28} />,
@@ -168,24 +89,14 @@ export function FeaturesSection() {
         "Adapte o sistema às necessidades específicas do seu negócio com opções flexíveis.",
       iconBg: "bg-indigo-100 dark:bg-indigo-900/30",
       iconColor: "text-indigo-600 dark:text-indigo-400",
-      iconType: "gear",
     },
   ];
 
-  if (!isVisible) {
-    return (
-      <div className="min-h-[600px] bg-gradient-to-b from-white via-gray-50 to-white dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900"></div>
-    );
-  }
-
   return (
-    <section
-      ref={sectionRef}
-      className="section-padding py-20 bg-gradient-to-b from-white via-gray-50 to-white dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900"
-    >
-      <div className="container-custom">
+    <section className="py-20 bg-gradient-to-b from-white via-gray-50 to-white dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="features-title text-3xl md:text-4xl font-bold mb-6 gradient-text">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-white">
             Funcionalidades Poderosas
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300">
@@ -194,7 +105,7 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        <div className="features-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <FeatureCard
               key={index}
@@ -204,8 +115,6 @@ export function FeaturesSection() {
               iconBg={feature.iconBg}
               iconColor={feature.iconColor}
               index={index}
-              iconType={feature.iconType}
-              use3DIcon={false}
             />
           ))}
         </div>

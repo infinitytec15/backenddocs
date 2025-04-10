@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,7 +11,6 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { PlansIconFallback } from "./PlansIconFallback";
-import { AnimatedBadge } from "./3d/AnimatedBadge";
 import { getPlans, Plan } from "@/lib/api/plans";
 
 export function PlansSection() {
@@ -195,15 +193,16 @@ export function PlansSection() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {displayPlans.map((plan, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
                 className={`bg-white dark:bg-gray-800 border-2 rounded-2xl overflow-hidden relative ${plan.popular ? `border-${plan.color}-300` : `border-gray-200 dark:border-gray-700 hover:border-${plan.color}-200 dark:hover:border-${plan.color}-700 transition-all`}`}
               >
                 {plan.popular && (
-                  <AnimatedBadge text="MAIS VENDIDO" color={plan.color} />
+                  <div
+                    className={`absolute top-0 right-0 bg-${plan.color}-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg`}
+                  >
+                    MAIS VENDIDO
+                  </div>
                 )}
                 <div className="p-6 pb-16">
                   <div className="flex items-center mb-4">
@@ -257,7 +256,7 @@ export function PlansSection() {
                     </Button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}
