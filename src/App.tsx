@@ -8,6 +8,7 @@ import Success from "./components/pages/success";
 import Home from "./components/pages/home";
 import PaginaInicial from "./components/pages/home-pt";
 import FuncionalidadesPt from "./components/pages/funcionalidades-pt";
+import BenefitsPackagePt from "./components/pages/benefits-package-pt";
 import { AuthProvider, useAuth } from "../supabase/auth";
 import { Toaster } from "./components/ui/toaster";
 import { LoadingScreen, LoadingSpinner } from "./components/ui/loading-spinner";
@@ -35,6 +36,7 @@ function AppRoutes() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/funcionalidades" element={<FuncionalidadesPt />} />
+        <Route path="/beneficios" element={<BenefitsPackagePt />} />
         <Route
           path="/dashboard"
           element={

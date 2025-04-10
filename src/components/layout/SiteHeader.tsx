@@ -70,10 +70,10 @@ export function SiteHeader() {
             </Link>
 
             <Link
-              to="/gamificacao"
+              to="/beneficios"
               className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
             >
-              Gamificação
+              Benefícios
             </Link>
             <Link
               to="/sobre"
@@ -151,11 +151,11 @@ export function SiteHeader() {
               </Link>
 
               <Link
-                to="/gamificacao"
+                to="/beneficios"
                 className="text-base font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Gamificação
+                Benefícios
               </Link>
               <Link
                 to="/sobre"

@@ -37,10 +37,18 @@ import {
   Ticket,
   Layers,
 } from "lucide-react";
-import { useAuth } from "../../../supabase/auth";
+
+// Mock user data for development purposes
+const mockUser = {
+  user_metadata: {
+    full_name: "Usuário Teste",
+  },
+  email: "usuario@teste.com",
+};
 
 const Gamification = () => {
-  const { user } = useAuth();
+  // Use mock user data instead of useAuth
+  const user = mockUser;
   const [activeTab, setActiveTab] = useState("overview");
 
   const achievements = [
