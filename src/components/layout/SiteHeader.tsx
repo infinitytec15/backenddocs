@@ -87,6 +87,12 @@ export function SiteHeader() {
             >
               Contato
             </Link>
+            <Link
+              to="/programa-afiliados"
+              className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+            >
+              Afiliados
+            </Link>
           </nav>
 
           <div className="flex items-center space-x-4">
@@ -170,6 +176,13 @@ export function SiteHeader() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contato
+              </Link>
+              <Link
+                to="/programa-afiliados"
+                className="text-base font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Afiliados
               </Link>
             </nav>
             <div className="flex flex-col space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">

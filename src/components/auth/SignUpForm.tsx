@@ -3,10 +3,11 @@ import { useAuth } from "../../../supabase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import ModernAuthLayout from "./ModernAuthLayout";
 import { useToast } from "@/components/ui/use-toast";
 import { LockKeyhole, Mail, User } from "lucide-react";
+import AffiliateRegistration from "./AffiliateRegistration";
 
 export default function SignUpForm() {
   const [email, setEmail] = useState("");
@@ -14,7 +15,11 @@ export default function SignUpForm() {
   const [fullName, setFullName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { signUp } = useAuth();
+  const [searchParams] = useSearchParams();
+  const [showAffiliateForm, setShowAffiliateForm] = useState(
+    searchParams.get("affiliate") === "true",
+  );
+  const { signUp, registerAffiliate } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -43,11 +48,48 @@ export default function SignUpForm() {
     }
   };
 
+  const handleAffiliateSubmit = async (
+    taxId: string,
+    bankInfo: string,
+    termsAccepted: boolean,
+  ) => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // First create the regular account
+      await signUp(email, password, fullName);
+
+      // Then register as affiliate
+      await registerAffiliate(email, taxId, bankInfo);
+
+      toast({
+        title: "Affiliate account created successfully",
+        description:
+          "Please check your email to verify your account. You'll be notified when your affiliate status is approved.",
+        duration: 5000,
+      });
+      navigate("/login");
+    } catch (error: any) {
+      console.error("Error creating affiliate account:", error);
+      if (error?.message?.includes("roles")) {
+        setError("System configuration error. Please contact support.");
+      } else {
+        setError(
+          error?.message ||
+            "Error creating affiliate account. Please try again.",
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <ModernAuthLayout>
       <div className="p-8">
         <h3 className="text-xl font-semibold text-center mb-6">
-          Create your account
+          {showAffiliateForm ? "Torne-se um Afiliado" : "Create your account"}
         </h3>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -110,19 +152,42 @@ export default function SignUpForm() {
             </p>
           </div>
 
-          {error && (
-            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">
-              {error}
-            </div>
+          {!showAffiliateForm && (
+            <>
+              {error && (
+                <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">
+                  {error}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium transition-all"
+              >
+                {isLoading ? "Creating account..." : "Create account"}
+              </Button>
+
+              <div className="text-center mt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAffiliateForm(true)}
+                  className="text-blue-600 hover:underline text-sm font-medium"
+                >
+                  Quero me tornar um afiliado
+                </button>
+              </div>
+            </>
           )}
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium transition-all"
-          >
-            {isLoading ? "Creating account..." : "Create account"}
-          </Button>
+          {showAffiliateForm && (
+            <AffiliateRegistration
+              email={email}
+              fullName={fullName}
+              onSubmit={handleAffiliateSubmit}
+              isLoading={isLoading}
+            />
+          )}
 
           <div className="text-xs text-center text-gray-500 mt-4">
             By creating an account, you agree to our{" "}

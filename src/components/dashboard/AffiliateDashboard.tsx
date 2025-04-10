@@ -14,6 +14,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  getAffiliateData,
+  getAffiliateReferrals,
+  getAffiliateTransactions,
+  registerAsAffiliate,
+} from "@/lib/api/affiliate";
 
 interface AffiliateData {
   id: string;
@@ -65,73 +71,18 @@ export default function AffiliateDashboard() {
       setError("");
 
       try {
-        // Fetch affiliate data
-        const { data: affiliateData, error: affiliateError } = await supabase
-          .from("affiliates")
-          .select("*")
-          .eq("user_id", user.id)
-          .single();
-
-        if (affiliateError) throw affiliateError;
+        // Fetch affiliate data using the API function
+        const affiliateData = await getAffiliateData();
+        if (!affiliateData) throw new Error("Failed to fetch affiliate data");
         setAffiliateData(affiliateData);
 
-        // Fetch referrals (mock data for now)
-        // In a real implementation, you would fetch this from the database
-        setReferrals([
-          {
-            id: "1",
-            email: "usuario1@exemplo.com",
-            full_name: "João Silva",
-            created_at: "2024-09-01T10:00:00",
-            plan: "Profissional",
-            status: "active",
-          },
-          {
-            id: "2",
-            email: "usuario2@exemplo.com",
-            full_name: "Maria Oliveira",
-            created_at: "2024-09-02T14:30:00",
-            plan: "Básico",
-            status: "active",
-          },
-          {
-            id: "3",
-            email: "usuario3@exemplo.com",
-            full_name: "Carlos Santos",
-            created_at: "2024-09-03T09:15:00",
-            plan: "Empresarial",
-            status: "pending",
-          },
-        ]);
+        // Fetch referrals using the API function
+        const referralsData = await getAffiliateReferrals();
+        setReferrals(referralsData);
 
-        // Fetch transactions (mock data for now)
-        // In a real implementation, you would fetch this from the database
-        setTransactions([
-          {
-            id: "1",
-            amount: 24.75,
-            type: "commission",
-            status: "completed",
-            created_at: "2024-09-05T10:30:00",
-            description: "Comissão - João Silva (Plano Profissional)",
-          },
-          {
-            id: "2",
-            amount: 9.8,
-            type: "commission",
-            status: "completed",
-            created_at: "2024-09-06T15:45:00",
-            description: "Comissão - Maria Oliveira (Plano Básico)",
-          },
-          {
-            id: "3",
-            amount: 34.55,
-            type: "payout",
-            status: "pending",
-            created_at: "2024-09-10T09:00:00",
-            description: "Pagamento - Setembro 2024",
-          },
-        ]);
+        // Fetch transactions using the API function
+        const transactionsData = await getAffiliateTransactions();
+        setTransactions(transactionsData);
       } catch (error) {
         console.error("Error fetching affiliate data:", error);
         setError("Erro ao carregar dados de afiliado. Tente novamente.");
@@ -194,10 +145,17 @@ export default function AffiliateDashboard() {
           className="bg-blue-600 hover:bg-blue-700 text-white"
           onClick={async () => {
             try {
-              const { data } =
-                await supabase.functions.invoke("register-affiliate");
-              if (data?.success) {
-                window.location.reload();
+              const result = await registerAsAffiliate();
+              if (result.success) {
+                toast({
+                  title: "Sucesso!",
+                  description:
+                    "Você agora é um afiliado. Sua página será recarregada.",
+                  duration: 3000,
+                });
+                setTimeout(() => window.location.reload(), 1000);
+              } else {
+                throw new Error(result.message);
               }
             } catch (error) {
               console.error("Error registering as affiliate:", error);
