@@ -70,7 +70,7 @@ export default function AffiliateDashboard() {
 
   const fetchAffiliateData = async () => {
     if (!user) return;
-    
+
     setIsLoading(true);
     setError("");
 
@@ -98,32 +98,12 @@ export default function AffiliateDashboard() {
   useEffect(() => {
     if (!user) return;
 
-    fetchAffiliateData();
-      setIsLoading(true);
-      setError("");
-
-      try {
-        // Fetch affiliate data using the API function
-        const affiliateData = await getAffiliateData();
-        if (!affiliateData) throw new Error("Failed to fetch affiliate data");
-        setAffiliateData(affiliateData);
-
-        // Fetch referrals using the API function
-        const referralsData = await getAffiliateReferrals();
-        setReferrals(referralsData);
-
-        // Fetch transactions using the API function
-        const transactionsData = await getAffiliateTransactions();
-        setTransactions(transactionsData);
-      } catch (error) {
-        console.error("Error fetching affiliate data:", error);
-        setError("Erro ao carregar dados de afiliado. Tente novamente.");
-      } finally {
-        setIsLoading(false);
-      }
+    // Call the async function inside useEffect
+    const loadData = async () => {
+      await fetchAffiliateData();
     };
 
-    fetchAffiliateData();
+    loadData();
   }, [user]);
 
   const copyReferralLink = () => {
@@ -250,15 +230,16 @@ export default function AffiliateDashboard() {
               R$ {affiliateData.balance.toFixed(2)}
             </div>
             <div className="flex items-center gap-2 mt-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="text-xs h-8 border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
                 onClick={() => {
                   if (affiliateData.balance <= 0) {
                     toast({
                       title: "Saldo insuficiente",
-                      description: "Você precisa ter saldo disponível para solicitar um saque.",
+                      description:
+                        "Você precisa ter saldo disponível para solicitar um saque.",
                       variant: "destructive",
                     });
                     return;

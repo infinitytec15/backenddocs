@@ -74,7 +74,11 @@ const Sidebar = ({
           // Add affiliate item to nav items if user is an affiliate
           setNavItems([
             ...items.slice(0, 6), // First 6 items
-            { icon: <LinkIcon size={20} />, label: "Programa de Afiliados" },
+            {
+              icon: <LinkIcon size={20} />,
+              label: "Programa de Afiliados",
+              href: "#afiliados",
+            },
             ...items.slice(6), // Remaining items
           ]);
         }

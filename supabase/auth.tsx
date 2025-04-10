@@ -8,11 +8,23 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
+  registerAffiliate: (
+    email: string,
+    taxId: string,
+    bankInfo: string,
+  ) => Promise<void>;
+  registerAffiliateWithSignup: (
+    email: string,
+    password: string,
+    fullName: string,
+    taxId: string,
+    bankInfo: string,
+  ) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -60,17 +72,58 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
   };
 
+  const registerAffiliate = async (
+    email: string,
+    taxId: string,
+    bankInfo: string,
+  ) => {
+    // Call the register_affiliate edge function
+    const { data, error } = await supabase.functions.invoke(
+      "register_affiliate",
+      {
+        body: { email, taxId, bankInfo },
+      },
+    );
+
+    if (error) throw error;
+    return data;
+  };
+
+  const registerAffiliateWithSignup = async (
+    email: string,
+    password: string,
+    fullName: string,
+    taxId: string,
+    bankInfo: string,
+  ) => {
+    // First create the user account
+    await signUp(email, password, fullName);
+
+    // Then register as affiliate
+    await registerAffiliate(email, taxId, bankInfo);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        signIn,
+        signUp,
+        signOut,
+        registerAffiliate,
+        registerAffiliateWithSignup,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-}
+};

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -15,8 +16,10 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { SiteLayout } from "../layout/SiteLayout";
+import AffiliateRegistrationModal from "../auth/AffiliateRegistrationModal";
 
 export default function AffiliateProgramPt() {
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   return (
     <SiteLayout>
       <div className="bg-white dark:bg-gray-950">
@@ -35,6 +38,7 @@ export default function AffiliateProgramPt() {
               <Button
                 size="lg"
                 className="bg-white text-blue-700 hover:bg-blue-50 font-semibold text-base px-8 py-6 h-auto"
+                onClick={() => setShowRegistrationModal(true)}
               >
                 Quero ser Afiliado
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -612,15 +616,14 @@ export default function AffiliateProgramPt() {
               começar.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/signup?affiliate=true">
-                <Button
-                  size="lg"
-                  className="bg-white text-blue-700 hover:bg-blue-50 font-semibold text-base px-8 py-6 h-auto w-full sm:w-auto"
-                >
-                  Criar conta de afiliado
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                className="bg-white text-blue-700 hover:bg-blue-50 font-semibold text-base px-8 py-6 h-auto w-full sm:w-auto"
+                onClick={() => setShowRegistrationModal(true)}
+              >
+                Criar conta de afiliado
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
               <Link to="/login">
                 <Button
                   size="lg"
@@ -643,6 +646,12 @@ export default function AffiliateProgramPt() {
           </div>
         </section>
       </div>
+
+      {/* Affiliate Registration Modal */}
+      <AffiliateRegistrationModal
+        isOpen={showRegistrationModal}
+        onClose={() => setShowRegistrationModal(false)}
+      />
     </SiteLayout>
   );
 }

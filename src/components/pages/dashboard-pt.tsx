@@ -19,7 +19,9 @@ import {
   CheckCircle,
   AlertCircle,
   Users,
+  Link as LinkIcon,
 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 import DocumentsGrid from "../dashboard/DocumentsGrid";
 import ContractsGrid from "../dashboard/ContractsGrid";
 import VaultGrid from "../dashboard/VaultGrid";
@@ -29,6 +31,7 @@ import { supabase } from "../../../supabase/supabase";
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("resumo");
   const [isAffiliate, setIsAffiliate] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -562,11 +565,52 @@ const Dashboard = () => {
           <VaultGrid />
         </TabsContent>
 
-        {isAffiliate && (
-          <TabsContent value="afiliados">
+        <TabsContent value="afiliados">
+          {isAffiliate ? (
             <AffiliateDashboard />
-          </TabsContent>
-        )}
+          ) : (
+            <div className="bg-yellow-50 text-yellow-700 p-6 rounded-lg text-center">
+              <AlertCircle className="h-12 w-12 mx-auto mb-4 text-yellow-500" />
+              <h3 className="text-lg font-semibold mb-2">
+                Você ainda não é um afiliado
+              </h3>
+              <p className="mb-4">
+                Torne-se um afiliado para começar a ganhar comissões indicando
+                novos usuários.
+              </p>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={async () => {
+                  try {
+                    const { data, error } = await supabase
+                      .from("users")
+                      .update({ is_affiliate: true })
+                      .eq("id", user?.id)
+                      .select();
+
+                    if (error) throw error;
+                    setIsAffiliate(true);
+                    toast({
+                      title: "Sucesso!",
+                      description: "Você agora é um afiliado.",
+                      duration: 3000,
+                    });
+                  } catch (error) {
+                    console.error("Error registering as affiliate:", error);
+                    toast({
+                      title: "Erro",
+                      description:
+                        "Erro ao registrar como afiliado. Tente novamente.",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+              >
+                Tornar-se Afiliado
+              </Button>
+            </div>
+          )}
+        </TabsContent>
       </Tabs>
     </DashboardLayout>
   );
