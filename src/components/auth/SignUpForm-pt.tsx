@@ -32,8 +32,15 @@ export default function SignUpFormPt() {
         duration: 5000,
       });
       navigate("/login");
-    } catch (error) {
-      setError("Erro ao criar conta");
+    } catch (error: any) {
+      console.error("Erro ao criar conta:", error);
+      if (error?.message?.includes("roles")) {
+        setError(
+          "Erro de configuração do sistema. Por favor, entre em contato com o suporte.",
+        );
+      } else {
+        setError(error?.message || "Erro ao criar conta. Tente novamente.");
+      }
     } finally {
       setIsLoading(false);
     }

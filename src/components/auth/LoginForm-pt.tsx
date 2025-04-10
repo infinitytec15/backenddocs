@@ -22,7 +22,7 @@ export default function LoginFormPt() {
 
     try {
       await signIn(email, password);
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       setError("E-mail ou senha inválidos");
     } finally {
@@ -67,7 +67,7 @@ export default function LoginFormPt() {
                 Senha
               </Label>
               <Link
-                to="/forgot-password"
+                to="/esqueci-senha"
                 className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
               >
                 Esqueceu a senha?

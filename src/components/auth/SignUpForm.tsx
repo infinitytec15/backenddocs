@@ -31,8 +31,13 @@ export default function SignUpForm() {
         duration: 5000,
       });
       navigate("/login");
-    } catch (error) {
-      setError("Error creating account");
+    } catch (error: any) {
+      console.error("Error creating account:", error);
+      if (error?.message?.includes("roles")) {
+        setError("System configuration error. Please contact support.");
+      } else {
+        setError(error?.message || "Error creating account. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

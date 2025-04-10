@@ -355,7 +355,7 @@ DROP POLICY IF EXISTS "Users can view documents they have access to" ON document
 CREATE POLICY "Users can view documents they have access to"
 ON documents FOR SELECT
 USING (
-  created_by = auth.uid() OR
+  documents.created_by = auth.uid() OR
   EXISTS (
     SELECT 1 FROM organization_members
     WHERE organization_members.organization_id = documents.organization_id
@@ -385,7 +385,7 @@ DROP POLICY IF EXISTS "Users can update documents they own or have edit access t
 CREATE POLICY "Users can update documents they own or have edit access to"
 ON documents FOR UPDATE
 USING (
-  created_by = auth.uid() OR
+  documents.created_by = auth.uid() OR
   EXISTS (
     SELECT 1 FROM document_shares
     WHERE document_shares.document_id = documents.id
@@ -399,7 +399,7 @@ DROP POLICY IF EXISTS "Users can view contracts they have access to" ON contract
 CREATE POLICY "Users can view contracts they have access to"
 ON contracts FOR SELECT
 USING (
-  created_by = auth.uid() OR
+  contracts.created_by = auth.uid() OR
   EXISTS (
     SELECT 1 FROM organization_members
     WHERE organization_members.organization_id = contracts.organization_id
