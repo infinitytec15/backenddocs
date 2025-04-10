@@ -35,25 +35,30 @@ function FeatureCard({
   use3DIcon = true,
 }: FeatureCardProps) {
   return (
-    <div className="feature-card scroll-fade-in bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+    <div className="feature-card scroll-fade-in bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:translate-y-[-5px]">
       {use3DIcon ? (
-        <div className="h-20 w-20 mb-4">
+        <div className="h-24 w-24 mb-5 mx-auto">
           <FeatureIconScene
             iconType={iconType}
             color={iconColor.replace("text-", "")}
+            className="cursor-pointer"
+            interactive={false}
+            scale={1.2}
           />
         </div>
       ) : (
         <div
-          className={`h-14 w-14 rounded-xl flex items-center justify-center mb-4 ${iconBg}`}
+          className={`h-16 w-16 rounded-xl flex items-center justify-center mb-5 mx-auto ${iconBg}`}
         >
           <div className={`${iconColor}`}>{icon}</div>
         </div>
       )}
-      <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">
+      <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white text-center">
         {title}
       </h3>
-      <p className="text-gray-600 dark:text-gray-300 text-sm">{description}</p>
+      <p className="text-gray-600 dark:text-gray-300 text-sm text-center">
+        {description}
+      </p>
     </div>
   );
 }
@@ -160,7 +165,10 @@ export function FeaturesSection() {
   }
 
   return (
-    <section ref={sectionRef} className="section-padding">
+    <section
+      ref={sectionRef}
+      className="section-padding py-20 bg-gradient-to-b from-white via-gray-50 to-white dark:from-gray-900 dark:via-gray-800/50 dark:to-gray-900"
+    >
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="features-title text-3xl md:text-4xl font-bold mb-6 gradient-text">
@@ -172,7 +180,7 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        <div className="features-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="features-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <FeatureCard
               key={index}

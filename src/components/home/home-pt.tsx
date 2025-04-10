@@ -25,9 +25,9 @@ export default function PaginaInicial() {
   return (
     <SiteLayout>
       <HeroSection />
+      <FeaturesSection />
       <MainFeaturesSection />
       <BenefitsSection />
-      <FeaturesSection />
       <PlansSection />
       <CtaSection />
     </SiteLayout>

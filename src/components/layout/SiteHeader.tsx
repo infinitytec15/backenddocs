@@ -1,21 +1,53 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { Menu, X } from "lucide-react";
 
-export function SiteHeader() {
+// Hook personalizado para lidar com o evento de rolagem
+function useScrollPosition() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
+  // Usando useCallback para memoizar a função
+  const handleScroll = useCallback(() => {
+    // Verificar se estamos no navegador
+    if (typeof window === "undefined") return;
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+    setIsScrolled(scrollPosition > 10);
   }, []);
+
+  // Efeito para adicionar/remover o listener
+  useEffect(() => {
+    // Verificação de segurança para SSR
+    if (typeof window === "undefined") return;
+
+    // Verificação inicial
+    handleScroll();
+
+    // Adicionar listener com tratamento de erro
+    try {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+    } catch (e) {
+      console.error("Erro ao adicionar evento de scroll:", e);
+    }
+
+    // Cleanup function
+    return () => {
+      try {
+        window.removeEventListener("scroll", handleScroll);
+      } catch (e) {
+        console.error("Erro ao remover evento de scroll:", e);
+      }
+    };
+  }, [handleScroll]);
+
+  return isScrolled;
+}
+
+export function SiteHeader() {
+  const isScrolled = useScrollPosition();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <header

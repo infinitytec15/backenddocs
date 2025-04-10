@@ -1,11 +1,14 @@
-import { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useRef, useState, useEffect } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import {
   MeshWobbleMaterial,
   Float,
   MeshDistortMaterial,
+  useGLTF,
+  MeshReflectorMaterial,
+  MeshTransmissionMaterial,
 } from "@react-three/drei";
-import { Mesh } from "three";
+import { Mesh, Color, MathUtils } from "three";
 
 type IconProps = {
   color: string;
@@ -23,26 +26,57 @@ export function DocumentIcon({
   const line1 = useRef<Mesh>(null!);
   const line2 = useRef<Mesh>(null!);
   const line3 = useRef<Mesh>(null!);
+  const signature = useRef<Mesh>(null!);
+
+  // Convert color string to Three.js color
+  const themeColor = new Color(color);
+  const lighterColor = new Color(color).multiplyScalar(1.2);
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
 
-    // Gentle floating animation
+    // Enhanced floating animation with easing
     if (mainDoc.current && mainDoc.current.parent) {
-      mainDoc.current.parent.rotation.y = Math.sin(t * 0.3) * 0.2;
-      mainDoc.current.parent.rotation.x = Math.sin(t * 0.2) * 0.1;
+      mainDoc.current.parent.rotation.y = MathUtils.lerp(
+        mainDoc.current.parent.rotation.y,
+        Math.sin(t * 0.3) * 0.25,
+        0.05,
+      );
+      mainDoc.current.parent.rotation.x = MathUtils.lerp(
+        mainDoc.current.parent.rotation.x,
+        Math.sin(t * 0.2) * 0.15,
+        0.05,
+      );
+      // Add subtle position animation
+      mainDoc.current.parent.position.y = Math.sin(t * 0.5) * 0.1;
     }
 
-    // Subtle pulsing for the text lines
+    // Improved pulsing for the text lines with staggered timing
     if (line1.current) {
-      line1.current.scale.x = 1 + Math.sin(t * 1.5) * 0.05;
-      line2.current.scale.x = 1 + Math.sin(t * 1.5 + 0.5) * 0.05;
-      line3.current.scale.x = 1 + Math.sin(t * 1.5 + 1) * 0.05;
+      line1.current.scale.x = 1 + Math.sin(t * 1.2) * 0.08;
+      line2.current.scale.x = 1 + Math.sin(t * 1.2 + 0.7) * 0.08;
+      line3.current.scale.x = 1 + Math.sin(t * 1.2 + 1.4) * 0.08;
+
+      // Add subtle color pulsing
+      const pulseIntensity = 0.1 + Math.sin(t * 0.8) * 0.05;
+      line1.current.material.emissiveIntensity = pulseIntensity;
+      line2.current.material.emissiveIntensity = pulseIntensity;
+      line3.current.material.emissiveIntensity = pulseIntensity;
     }
 
-    // Corner fold animation
+    // Enhanced corner fold animation
     if (docCorner.current) {
-      docCorner.current.rotation.z = -Math.PI / 4 + Math.sin(t * 2) * 0.05;
+      docCorner.current.rotation.z = MathUtils.lerp(
+        docCorner.current.rotation.z,
+        -Math.PI / 4 + Math.sin(t * 1.5) * 0.08,
+        0.1,
+      );
+    }
+
+    // Signature animation
+    if (signature.current) {
+      signature.current.rotation.z = Math.PI / 16 + Math.sin(t * 1.2) * 0.05;
+      signature.current.scale.x = 0.6 + Math.sin(t * 1.8) * 0.04;
     }
   });
 
@@ -54,25 +88,35 @@ export function DocumentIcon({
       position={position}
     >
       <group scale={scale}>
-        {/* Main document body */}
-        <mesh ref={mainDoc} position={[0, 0, 0]}>
+        {/* Main document body with improved materials */}
+        <mesh ref={mainDoc} position={[0, 0, 0]} castShadow receiveShadow>
           <boxGeometry args={[1.4, 1.8, 0.05]} />
-          <MeshWobbleMaterial
+          <MeshTransmissionMaterial
             color="#ffffff"
-            factor={0.02}
-            speed={1}
-            metalness={0.2}
-            roughness={0.1}
-            emissive="#ffffff"
-            emissiveIntensity={0.05}
+            backside={false}
+            backsideThickness={0}
+            thickness={0.05}
+            chromaticAberration={0.02}
+            anisotropy={0.1}
+            envMapIntensity={0.3}
+            distortion={0.1}
+            distortionScale={0.2}
+            temporalDistortion={0.1}
+            metalness={0.1}
+            roughness={0.2}
+            clearcoat={1}
+            clearcoatRoughness={0.2}
+            ior={1.5}
+            transmission={0.95}
           />
         </mesh>
 
-        {/* Folded corner */}
+        {/* Folded corner with improved material */}
         <mesh
           ref={docCorner}
           position={[0.5, 0.7, 0.03]}
           rotation={[0, 0, -Math.PI / 4]}
+          castShadow
         >
           <boxGeometry args={[0.4, 0.4, 0.05]} />
           <MeshWobbleMaterial
@@ -81,54 +125,79 @@ export function DocumentIcon({
             speed={1}
             metalness={0.3}
             roughness={0.2}
+            transparent
+            opacity={0.9}
           />
         </mesh>
 
-        {/* Text lines */}
-        <mesh ref={line1} position={[0, 0.5, 0.03]} scale={[0.8, 0.08, 0.01]}>
-          <boxGeometry args={[1, 1, 1]} />
-          <MeshWobbleMaterial
-            color={color}
-            factor={0.1}
-            speed={1}
-            metalness={0.5}
-            roughness={0.3}
-            emissive={color}
-            emissiveIntensity={0.2}
-          />
-        </mesh>
-
-        <mesh ref={line2} position={[0, 0.2, 0.03]} scale={[1, 0.08, 0.01]}>
-          <boxGeometry args={[1, 1, 1]} />
-          <MeshWobbleMaterial
-            color={color}
-            factor={0.1}
-            speed={1}
-            metalness={0.5}
-            roughness={0.3}
-            emissive={color}
-            emissiveIntensity={0.2}
-          />
-        </mesh>
-
-        <mesh ref={line3} position={[0, -0.1, 0.03]} scale={[0.9, 0.08, 0.01]}>
-          <boxGeometry args={[1, 1, 1]} />
-          <MeshWobbleMaterial
-            color={color}
-            factor={0.1}
-            speed={1}
-            metalness={0.5}
-            roughness={0.3}
-            emissive={color}
-            emissiveIntensity={0.2}
-          />
-        </mesh>
-
-        {/* Signature line */}
+        {/* Text lines with improved materials and positioning */}
         <mesh
+          ref={line1}
+          position={[0, 0.5, 0.03]}
+          scale={[0.8, 0.08, 0.01]}
+          castShadow
+        >
+          <boxGeometry args={[1, 1, 1]} />
+          <MeshWobbleMaterial
+            color={color}
+            factor={0.1}
+            speed={1}
+            metalness={0.6}
+            roughness={0.2}
+            emissive={color}
+            emissiveIntensity={0.3}
+            transparent
+            opacity={0.95}
+          />
+        </mesh>
+
+        <mesh
+          ref={line2}
+          position={[0, 0.2, 0.03]}
+          scale={[1, 0.08, 0.01]}
+          castShadow
+        >
+          <boxGeometry args={[1, 1, 1]} />
+          <MeshWobbleMaterial
+            color={color}
+            factor={0.1}
+            speed={1}
+            metalness={0.6}
+            roughness={0.2}
+            emissive={color}
+            emissiveIntensity={0.3}
+            transparent
+            opacity={0.95}
+          />
+        </mesh>
+
+        <mesh
+          ref={line3}
+          position={[0, -0.1, 0.03]}
+          scale={[0.9, 0.08, 0.01]}
+          castShadow
+        >
+          <boxGeometry args={[1, 1, 1]} />
+          <MeshWobbleMaterial
+            color={color}
+            factor={0.1}
+            speed={1}
+            metalness={0.6}
+            roughness={0.2}
+            emissive={color}
+            emissiveIntensity={0.3}
+            transparent
+            opacity={0.95}
+          />
+        </mesh>
+
+        {/* Signature line with improved animation */}
+        <mesh
+          ref={signature}
           position={[-0.2, -0.5, 0.03]}
           scale={[0.6, 0.1, 0.01]}
           rotation={[0, 0, Math.PI / 16]}
+          castShadow
         >
           <boxGeometry args={[1, 1, 1]} />
           <MeshWobbleMaterial
@@ -138,7 +207,9 @@ export function DocumentIcon({
             metalness={0.7}
             roughness={0.2}
             emissive={color}
-            emissiveIntensity={0.3}
+            emissiveIntensity={0.4}
+            transparent
+            opacity={0.95}
           />
         </mesh>
       </group>
@@ -155,28 +226,85 @@ export function ShieldIcon({
   const lock = useRef<Mesh>(null!);
   const lockShackle = useRef<Mesh>(null!);
   const glow = useRef<Mesh>(null!);
+  const emblem = useRef<Mesh>(null!);
+
+  // Convert color string to Three.js color
+  const themeColor = new Color(color);
+  const glowColor = new Color(color).multiplyScalar(1.3);
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
 
-    // Shield pulsing and rotation
+    // Enhanced shield pulsing and rotation with smoother animation
     if (shield.current && shield.current.parent) {
-      shield.current.parent.rotation.y = Math.sin(t * 0.3) * 0.3;
-      shield.current.scale.x = 1 + Math.sin(t * 1) * 0.03;
-      shield.current.scale.y = 1 + Math.sin(t * 1) * 0.03;
+      shield.current.parent.rotation.y = MathUtils.lerp(
+        shield.current.parent.rotation.y,
+        Math.sin(t * 0.3) * 0.35,
+        0.05,
+      );
+
+      // Add subtle vertical movement
+      shield.current.parent.position.y = Math.sin(t * 0.5) * 0.1;
+
+      // Smoother shield pulsing
+      const pulseScale = 1 + Math.sin(t * 0.8) * 0.04;
+      shield.current.scale.x = MathUtils.lerp(
+        shield.current.scale.x,
+        pulseScale,
+        0.1,
+      );
+      shield.current.scale.y = MathUtils.lerp(
+        shield.current.scale.y,
+        pulseScale,
+        0.1,
+      );
     }
 
-    // Lock subtle movement
+    // Enhanced lock movement with spring-like motion
     if (lock.current) {
-      lock.current.position.y = -0.1 + Math.sin(t * 1.5) * 0.02;
-      lockShackle.current.position.y = 0.2 + Math.sin(t * 1.5) * 0.02;
+      const lockY = -0.1 + Math.sin(t * 1.2) * 0.03;
+      lock.current.position.y = MathUtils.lerp(
+        lock.current.position.y,
+        lockY,
+        0.1,
+      );
+
+      const shackleY = 0.2 + Math.sin(t * 1.2) * 0.03;
+      lockShackle.current.position.y = MathUtils.lerp(
+        lockShackle.current.position.y,
+        shackleY,
+        0.1,
+      );
+
+      // Add subtle rotation to the lock
+      lock.current.rotation.z = Math.sin(t * 0.8) * 0.05;
     }
 
-    // Glow effect
+    // Enhanced glow effect with better pulsing
     if (glow.current) {
-      glow.current.material.opacity = 0.6 + Math.sin(t * 2) * 0.2;
-      glow.current.scale.x = 1.1 + Math.sin(t * 0.5) * 0.1;
-      glow.current.scale.y = 1.1 + Math.sin(t * 0.5) * 0.1;
+      // Smoother opacity pulsing
+      glow.current.material.opacity = 0.5 + Math.sin(t * 1.5) * 0.3;
+
+      // Smoother scale pulsing
+      const glowScale = 1.1 + Math.sin(t * 0.7) * 0.15;
+      glow.current.scale.x = MathUtils.lerp(
+        glow.current.scale.x,
+        glowScale,
+        0.05,
+      );
+      glow.current.scale.y = MathUtils.lerp(
+        glow.current.scale.y,
+        glowScale,
+        0.05,
+      );
+
+      // Pulsing emissive intensity
+      glow.current.material.emissiveIntensity = 0.5 + Math.sin(t * 1.2) * 0.3;
+    }
+
+    // Emblem rotation
+    if (emblem.current) {
+      emblem.current.rotation.z = t * 0.2;
     }
   });
 
@@ -188,66 +316,93 @@ export function ShieldIcon({
       position={position}
     >
       <group scale={scale}>
-        {/* Shield base */}
-        <mesh ref={shield}>
+        {/* Shield base with improved material */}
+        <mesh ref={shield} castShadow receiveShadow>
           <cylinderGeometry args={[1, 0.8, 1.6, 32, 1, false, 0, Math.PI]} />
           <MeshWobbleMaterial
             color={color}
-            factor={0.05}
-            speed={1}
-            metalness={0.8}
-            roughness={0.2}
-            emissive={color}
-            emissiveIntensity={0.1}
-          />
-        </mesh>
-
-        {/* Lock body */}
-        <mesh ref={lock} position={[0, -0.1, 0.3]} scale={[0.5, 0.4, 0.2]}>
-          <boxGeometry args={[1, 1, 1]} />
-          <MeshWobbleMaterial
-            color="#dddddd"
-            factor={0.02}
+            factor={0.03}
             speed={1}
             metalness={0.9}
             roughness={0.1}
-            emissive="#ffffff"
-            emissiveIntensity={0.1}
+            emissive={color}
+            emissiveIntensity={0.15}
+            clearcoat={1}
+            clearcoatRoughness={0.1}
           />
         </mesh>
 
-        {/* Lock shackle */}
+        {/* Shield emblem/symbol */}
+        <mesh
+          ref={emblem}
+          position={[0, 0.2, 0.25]}
+          scale={[0.5, 0.5, 0.05]}
+          castShadow
+        >
+          <ringGeometry args={[0.3, 0.5, 16]} />
+          <MeshWobbleMaterial
+            color="#ffffff"
+            factor={0.05}
+            speed={1.5}
+            metalness={1.0}
+            roughness={0.1}
+            emissive="#ffffff"
+            emissiveIntensity={0.3}
+          />
+        </mesh>
+
+        {/* Lock body with improved material */}
+        <mesh
+          ref={lock}
+          position={[0, -0.1, 0.3]}
+          scale={[0.5, 0.4, 0.2]}
+          castShadow
+        >
+          <boxGeometry args={[1, 1, 1]} />
+          <MeshReflectorMaterial
+            color="#dddddd"
+            metalness={1.0}
+            roughness={0.1}
+            mirror={0.5}
+            resolution={256}
+            blur={[300, 100]}
+            mixBlur={0.5}
+          />
+        </mesh>
+
+        {/* Lock shackle with improved material */}
         <mesh
           ref={lockShackle}
           position={[0, 0.2, 0.3]}
           scale={[0.3, 0.3, 0.2]}
+          castShadow
         >
-          <torusGeometry args={[0.5, 0.15, 8, 16, Math.PI]} />
-          <MeshWobbleMaterial
+          <torusGeometry args={[0.5, 0.15, 12, 24, Math.PI]} />
+          <MeshReflectorMaterial
             color="#dddddd"
-            factor={0.02}
-            speed={1}
-            metalness={0.9}
+            metalness={1.0}
             roughness={0.1}
-            emissive="#ffffff"
-            emissiveIntensity={0.1}
+            mirror={0.5}
+            resolution={256}
+            blur={[300, 100]}
+            mixBlur={0.5}
           />
         </mesh>
 
-        {/* Glow effect */}
+        {/* Enhanced glow effect */}
         <mesh ref={glow} position={[0, 0, 0.1]} rotation={[0, 0, 0]}>
           <cylinderGeometry
             args={[1.05, 0.85, 1.65, 32, 1, false, 0, Math.PI]}
           />
           <MeshDistortMaterial
             color={color}
-            speed={3}
-            distort={0.3}
+            speed={2}
+            distort={0.4}
             radius={1}
             transparent={true}
             opacity={0.6}
             emissive={color}
-            emissiveIntensity={0.5}
+            emissiveIntensity={0.6}
           />
         </mesh>
       </group>
