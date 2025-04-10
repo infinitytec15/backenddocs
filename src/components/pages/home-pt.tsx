@@ -3,6 +3,7 @@ import { SiteLayout } from "@/components/layout/SiteLayout";
 import { HeroSection } from "@/components/home/HeroSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
+import { PlansSection } from "@/components/home/PlansSection";
 import { CtaSection } from "@/components/home/CtaSection";
 import { useAuth } from "../../../supabase/auth";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +26,7 @@ export default function PaginaInicial() {
       <HeroSection />
       <BenefitsSection />
       <FeaturesSection />
+      <PlansSection />
       <CtaSection />
     </SiteLayout>
   );
