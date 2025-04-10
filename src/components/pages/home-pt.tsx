@@ -4,7 +4,9 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { PlansSection } from "@/components/home/PlansSection";
-import { CtaSection } from "@/components/home/CtaSection";
+import { BenefitsPackageSection } from "@/components/home/BenefitsPackageSection";
+import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { FinalCtaSection } from "@/components/home/FinalCtaSection";
 import { useAuth } from "../../../supabase/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -23,11 +25,15 @@ export default function PaginaInicial() {
 
   return (
     <SiteLayout>
-      <HeroSection />
-      <HowItWorksSection />
-      <FeaturesSection />
-      <PlansSection />
-      <CtaSection />
+      <div className="bg-white dark:bg-gray-900">
+        <HeroSection />
+        <HowItWorksSection />
+        <FeaturesSection />
+        <PlansSection />
+        <BenefitsPackageSection />
+        <TestimonialsSection />
+        <FinalCtaSection />
+      </div>
     </SiteLayout>
   );
 }
