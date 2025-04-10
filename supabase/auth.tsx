@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
+import { getDefaultPlan, createUserPlan } from "../src/lib/api/user-plans";
 
 type AuthContextType = {
   user: User | null;
@@ -47,7 +48,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
+    // First create the user account
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -56,7 +58,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
       },
     });
+
     if (error) throw error;
+
+    // If user was created successfully, subscribe them to a default plan
+    if (data.user) {
+      try {
+        // Record signup date in the users table
+        const signupDate = new Date().toISOString();
+        await supabase
+          .from("users")
+          .update({ signup_date: signupDate })
+          .eq("id", data.user.id);
+
+        // Get the default plan ID (lowest price active plan)
+        const defaultPlanId = await getDefaultPlan();
+
+        if (defaultPlanId) {
+          // Create a user plan entry
+          await createUserPlan(data.user.id, defaultPlanId);
+          console.log(
+            `User ${data.user.id} subscribed to default plan ${defaultPlanId}`,
+          );
+        } else {
+          console.warn("No default plan found for automatic subscription");
+        }
+      } catch (planError) {
+        // Log the error but don't throw it - we still want the user to be created
+        console.error("Error subscribing user to default plan:", planError);
+      }
+    }
   };
 
   const signIn = async (email: string, password: string) => {

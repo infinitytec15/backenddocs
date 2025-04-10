@@ -27,6 +27,21 @@ export async function getPlans(): Promise<Plan[]> {
   return data as Plan[];
 }
 
+export async function getDefaultPlan(): Promise<Plan | null> {
+  const { data, error } = await supabase
+    .from("plans")
+    .select("*")
+    .eq("is_default", true)
+    .single();
+
+  if (error) {
+    console.error("Error fetching default plan:", error);
+    return null;
+  }
+
+  return data as Plan;
+}
+
 // Admin functions
 export async function createPlan(plan: Omit<Plan, "id">): Promise<Plan | null> {
   const { data, error } = await supabase

@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Navigate, Route, Routes, useRoutes } from "react-router-dom";
 import routes from "tempo-routes";
 import LoginForm from "./components/auth/LoginForm";
@@ -15,16 +15,59 @@ import AffiliateProgramPt from "./components/pages/affiliate-program-pt";
 import { AuthProvider, useAuth } from "../supabase/auth";
 import { Toaster } from "./components/ui/toaster";
 import { LoadingScreen, LoadingSpinner } from "./components/ui/loading-spinner";
+import { isTrialPeriodOver, hasActiveSubscription } from "./lib/api/user-plans";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
+  const [hasAccess, setHasAccess] = useState(false);
 
-  if (loading) {
+  useEffect(() => {
+    async function checkAccess() {
+      if (!user) {
+        setCheckingSubscription(false);
+        return;
+      }
+
+      try {
+        // Check if trial period is over
+        const trialOver = await isTrialPeriodOver(user.id);
+
+        if (!trialOver) {
+          // Still in trial period, grant access
+          setHasAccess(true);
+          setCheckingSubscription(false);
+          return;
+        }
+
+        // Trial is over, check if user has an active subscription
+        const hasSubscription = await hasActiveSubscription(user.id);
+        setHasAccess(hasSubscription);
+        setCheckingSubscription(false);
+      } catch (error) {
+        console.error("Error checking subscription status:", error);
+        setCheckingSubscription(false);
+      }
+    }
+
+    if (user && !loading) {
+      checkAccess();
+    } else if (!loading) {
+      setCheckingSubscription(false);
+    }
+  }, [user, loading]);
+
+  if (loading || checkingSubscription) {
     return <LoadingScreen text="Authenticating..." />;
   }
 
   if (!user) {
     return <Navigate to="/" />;
+  }
+
+  if (!hasAccess) {
+    // Redirect to a subscription page or show a message
+    return <Navigate to="/success?subscription=required" />;
   }
 
   return <>{children}</>;
