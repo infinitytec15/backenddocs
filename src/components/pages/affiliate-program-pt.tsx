@@ -532,6 +532,74 @@ export default function AffiliateProgramPt() {
           </div>
         </section>
 
+        {/* Depoimentos de Afiliados */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
+          <div className="mx-auto max-w-7xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                Depoimentos de Afiliados
+              </h2>
+              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Veja o que nossos afiliados estão dizendo sobre o programa e
+                como eles estão aumentando sua renda.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  name: "Ana Silva",
+                  role: "Consultora de Marketing Digital",
+                  image:
+                    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
+                  quote:
+                    "Comecei a indicar clientes há 6 meses e já consegui uma renda extra de R$1.500 por mês. O processo é super simples e o suporte é excelente!",
+                },
+                {
+                  name: "Carlos Mendes",
+                  role: "Contador Autônomo",
+                  image:
+                    "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80",
+                  quote:
+                    "Como contador, indico a plataforma para todos os meus clientes. Além de ajudá-los com a gestão de documentos, ainda ganho uma comissão recorrente.",
+                },
+                {
+                  name: "Juliana Costa",
+                  role: "Advogada",
+                  image:
+                    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80",
+                  quote:
+                    "A plataforma resolveu o problema de gestão de contratos do meu escritório e agora também me traz uma renda extra como afiliada. Recomendo!",
+                },
+              ].map((testimonial, index) => (
+                <div
+                  key={index}
+                  className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all"
+                >
+                  <div className="flex items-center mb-4">
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      className="h-14 w-14 rounded-full object-cover mr-4 border-2 border-blue-100 dark:border-blue-900"
+                    />
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        {testimonial.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {testimonial.role}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-300 italic">
+                    "{testimonial.quote}"
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA Section */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
           <div className="mx-auto max-w-5xl text-center">

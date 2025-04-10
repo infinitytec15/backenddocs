@@ -12,6 +12,8 @@ import {
   Users,
   CheckCircle,
   AlertCircle,
+  Download,
+  Upload,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -20,6 +22,7 @@ import {
   getAffiliateTransactions,
   registerAsAffiliate,
 } from "@/lib/api/affiliate";
+import InvoiceUpload from "./InvoiceUpload";
 
 interface AffiliateData {
   id: string;
@@ -62,11 +65,40 @@ export default function AffiliateDashboard() {
   const [transactions, setTransactions] = useState<TransactionData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showWithdrawalForm, setShowWithdrawalForm] = useState(false);
+  const [withdrawalAmount, setWithdrawalAmount] = useState(0);
+
+  const fetchAffiliateData = async () => {
+    if (!user) return;
+    
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // Fetch affiliate data using the API function
+      const affiliateData = await getAffiliateData();
+      if (!affiliateData) throw new Error("Failed to fetch affiliate data");
+      setAffiliateData(affiliateData);
+
+      // Fetch referrals using the API function
+      const referralsData = await getAffiliateReferrals();
+      setReferrals(referralsData);
+
+      // Fetch transactions using the API function
+      const transactionsData = await getAffiliateTransactions();
+      setTransactions(transactionsData);
+    } catch (error) {
+      console.error("Error fetching affiliate data:", error);
+      setError("Erro ao carregar dados de afiliado. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
 
-    const fetchAffiliateData = async () => {
+    fetchAffiliateData();
       setIsLoading(true);
       setError("");
 
@@ -171,6 +203,21 @@ export default function AffiliateDashboard() {
 
   return (
     <div className="space-y-6">
+      {showWithdrawalForm && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="max-w-md w-full">
+            <InvoiceUpload
+              withdrawalAmount={withdrawalAmount}
+              onSuccess={() => {
+                setShowWithdrawalForm(false);
+                // Refresh data after successful withdrawal request
+                fetchAffiliateData();
+              }}
+              onCancel={() => setShowWithdrawalForm(false)}
+            />
+          </div>
+        </div>
+      )}
       <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">
@@ -202,8 +249,26 @@ export default function AffiliateDashboard() {
             <div className="text-3xl font-bold text-gray-900 mb-1">
               R$ {affiliateData.balance.toFixed(2)}
             </div>
-            <div className="text-sm text-gray-500">
-              Próximo pagamento em 15/10/2024
+            <div className="flex items-center gap-2 mt-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-xs h-8 border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                onClick={() => {
+                  if (affiliateData.balance <= 0) {
+                    toast({
+                      title: "Saldo insuficiente",
+                      description: "Você precisa ter saldo disponível para solicitar um saque.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  setWithdrawalAmount(affiliateData.balance);
+                  setShowWithdrawalForm(true);
+                }}
+              >
+                <Download className="h-3 w-3 mr-1" /> Solicitar Saque
+              </Button>
             </div>
           </CardContent>
         </Card>
