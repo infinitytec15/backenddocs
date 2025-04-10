@@ -6,6 +6,9 @@ import SignUpForm from "./components/auth/SignUpForm";
 import Dashboard from "./components/pages/dashboard";
 import Success from "./components/pages/success";
 import Home from "./components/pages/home";
+import PaginaInicial from "./components/pages/home-pt";
+import FuncionalidadesPt from "./components/pages/funcionalidades-pt";
+import Plan from "./components/pages/plan-pt";
 import { AuthProvider, useAuth } from "../supabase/auth";
 import { Toaster } from "./components/ui/toaster";
 import { LoadingScreen, LoadingSpinner } from "./components/ui/loading-spinner";
@@ -28,9 +31,12 @@ function AppRoutes() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<PaginaInicial />} />
+        <Route path="/en" element={<Home />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignUpForm />} />
+        <Route path="/funcionalidades" element={<FuncionalidadesPt />} />
+        <Route path="/planos" element={<Plan />} />
         <Route
           path="/dashboard"
           element={
@@ -39,12 +45,7 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/success"
-          element={
-            <Success />
-          }
-        />
+        <Route path="/success" element={<Success />} />
       </Routes>
       {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
     </>
