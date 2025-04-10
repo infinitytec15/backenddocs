@@ -11,6 +11,8 @@ import {
   Crown,
   MessageSquare,
 } from "lucide-react";
+import { PlansIconFallback } from "./PlansIconFallback";
+import { AnimatedBadge } from "./3d/AnimatedBadge";
 
 export function PlansSection() {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
@@ -56,6 +58,7 @@ export function PlansSection() {
       price: calculatePrice(basePrices.start),
       period: getPeriodText(),
       icon: <Sparkles className="h-8 w-8 text-blue-500" />,
+      iconType: "sparkles",
       color: "blue",
       features: [
         "50 documentos",
@@ -70,6 +73,7 @@ export function PlansSection() {
       price: calculatePrice(basePrices.basic),
       period: getPeriodText(),
       icon: <Rocket className="h-8 w-8 text-indigo-500" />,
+      iconType: "rocket",
       color: "indigo",
       features: [
         "100 documentos",
@@ -78,13 +82,14 @@ export function PlansSection() {
         "Compartilhamento básico",
         "Assinatura digital básica",
       ],
-      popular: false,
+      popular: true,
     },
     {
       name: "Profissional",
       price: calculatePrice(basePrices.professional),
       period: getPeriodText(),
       icon: <Star className="h-8 w-8 text-purple-500" />,
+      iconType: "star",
       color: "purple",
       features: [
         "500 documentos",
@@ -94,13 +99,14 @@ export function PlansSection() {
         "Compartilhamento avançado",
         "Modelos de contratos",
       ],
-      popular: true,
+      popular: false,
     },
     {
       name: "Empresarial",
       price: calculatePrice(basePrices.enterprise),
       period: getPeriodText(),
       icon: <Crown className="h-8 w-8 text-amber-500" />,
+      iconType: "crown",
       color: "amber",
       features: [
         "Documentos ilimitados",
@@ -165,36 +171,32 @@ export function PlansSection() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
-              className={`bg-white dark:bg-gray-800 border-2 rounded-2xl overflow-hidden ${plan.popular ? `border-${plan.color}-300 relative` : `border-gray-200 dark:border-gray-700 hover:border-${plan.color}-200 dark:hover:border-${plan.color}-700 transition-all`}`}
+              className={`bg-white dark:bg-gray-800 border-2 rounded-2xl overflow-hidden relative ${plan.popular ? `border-${plan.color}-300` : `border-gray-200 dark:border-gray-700 hover:border-${plan.color}-200 dark:hover:border-${plan.color}-700 transition-all`}`}
             >
               {plan.popular && (
-                <div
-                  className={`absolute top-0 right-0 bg-${plan.color}-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-xl`}
-                >
-                  MAIS VENDIDO
-                </div>
+                <AnimatedBadge text="MAIS VENDIDO" color={plan.color} />
               )}
-              <div className="p-6">
+              <div className="p-6 pb-16">
                 <div className="flex items-center mb-4">
-                  <motion.div
-                    whileHover={{ rotate: 5, scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    animate={{ y: [0, -5, 0], rotate: [0, 2, 0] }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 10,
-                      y: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-                      rotate: {
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      },
-                    }}
-                    className={`rounded-full p-3 bg-${plan.color}-100 dark:bg-${plan.color}-900/30 mr-3`}
+                  <div
+                    className={`rounded-full p-3 bg-${plan.color}-100 dark:bg-${plan.color}-900/30 mr-3 h-14 w-14 flex items-center justify-center`}
                   >
-                    {plan.icon}
-                  </motion.div>
+                    <PlansIconFallback
+                      iconType={plan.iconType}
+                      color={
+                        plan.color === "blue"
+                          ? "#3b82f6"
+                          : plan.color === "indigo"
+                            ? "#6366f1"
+                            : plan.color === "purple"
+                              ? "#a855f7"
+                              : plan.color === "amber"
+                                ? "#f59e0b"
+                                : "#3b82f6"
+                      }
+                      size={32}
+                    />
+                  </div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                     {plan.name}
                   </h3>
@@ -205,7 +207,7 @@ export function PlansSection() {
                     /{plan.period}
                   </span>
                 </div>
-                <ul className="space-y-3 mb-6 min-h-[180px]">
+                <ul className="space-y-3 mb-6 min-h-[220px]">
                   {plan.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start">
                       <CheckCircle
@@ -217,12 +219,14 @@ export function PlansSection() {
                     </li>
                   ))}
                 </ul>
-                <Button
-                  className={`w-full ${plan.popular ? `bg-${plan.color}-600 hover:bg-${plan.color}-700 text-white` : "bg-gray-900 dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 text-white"}`}
-                  onClick={() => (window.location.href = "/signup")}
-                >
-                  Escolher Plano
-                </Button>
+                <div className="absolute bottom-6 left-6 right-6">
+                  <Button
+                    className={`w-full ${plan.color === "blue" ? "bg-blue-600 hover:bg-blue-700" : plan.color === "indigo" ? "bg-indigo-600 hover:bg-indigo-700" : plan.color === "purple" ? "bg-purple-600 hover:bg-purple-700" : plan.color === "amber" ? "bg-amber-600 hover:bg-amber-700" : "bg-gray-600 hover:bg-gray-700"} text-white`}
+                    onClick={() => (window.location.href = "/signup")}
+                  >
+                    Escolher Plano
+                  </Button>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -231,20 +235,7 @@ export function PlansSection() {
         {/* Custom Plan */}
         <div className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-2xl p-4 sm:p-8 text-center">
           <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
-            <motion.div
-              whileHover={{ rotate: 10, scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              animate={{ y: [0, -5, 0], rotate: [0, 5, 0] }}
-              transition={{
-                type: "spring",
-                stiffness: 400,
-                damping: 10,
-                y: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-                rotate: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-              }}
-            >
-              <MessageSquare className="h-8 w-8 text-green-600 dark:text-green-400" />
-            </motion.div>
+            <PlansIconFallback iconType="message" color="#16a34a" size={32} />
           </div>
           <h3 className="text-2xl font-bold mb-3">
             Precisa de um plano personalizado?
