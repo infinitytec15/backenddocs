@@ -77,7 +77,7 @@ const VaultGrid = ({
   const [loading, setLoading] = useState(isLoading);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredDocuments, setFilteredDocuments] = useState(documents);
-  
+
   useEffect(() => {
     if (isLoading) {
       const timer = setTimeout(() => {
@@ -89,9 +89,9 @@ const VaultGrid = ({
 
   useEffect(() => {
     setFilteredDocuments(
-      documents.filter(doc => 
-        doc.title.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      documents.filter((doc) =>
+        doc.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
     );
   }, [searchTerm, documents]);
 
@@ -101,14 +101,16 @@ const VaultGrid = ({
     return (
       <div className="w-full h-full bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-gray-100">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900">Cofre Digital</h2>
+          <h2 className="text-2xl font-semibold text-gray-900">
+            Cofre Digital
+          </h2>
           <div className="flex gap-2">
             <div className="w-64 h-10 bg-gray-100 rounded-full animate-pulse"></div>
             <div className="w-10 h-10 rounded-full bg-gray-100 animate-pulse"></div>
             <div className="w-10 h-10 rounded-full bg-gray-100 animate-pulse"></div>
           </div>
         </div>
-        
+
         <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm mb-6 animate-pulse">
           <div className="p-6">
             <div className="h-6 bg-gray-100 rounded w-1/4 mb-4"></div>
@@ -120,10 +122,13 @@ const VaultGrid = ({
             </div>
           </div>
         </Card>
-        
+
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {[...Array(5)].map((_, index) => (
-            <Card key={index} className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl shadow-sm h-[120px] animate-pulse">
+            <Card
+              key={index}
+              className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl shadow-sm h-[120px] animate-pulse"
+            >
               <div className="p-4 flex items-center">
                 <div className="h-10 w-10 rounded-lg bg-gray-100"></div>
                 <div className="ml-3 flex-1">
@@ -137,7 +142,7 @@ const VaultGrid = ({
       </div>
     );
   }
-  
+
   return (
     <div className="w-full h-full bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-gray-100">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -152,10 +157,14 @@ const VaultGrid = ({
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button variant="outline" size="icon" className="rounded-full h-10 w-10 border-gray-200">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full h-10 w-10 border-gray-200"
+          >
             <Filter className="h-4 w-4 text-gray-500" />
           </Button>
-          <Button 
+          <Button
             className="rounded-full bg-blue-500 hover:bg-blue-600 text-white h-10 px-4 flex items-center gap-2"
             onClick={onUpload}
           >
@@ -164,11 +173,13 @@ const VaultGrid = ({
           </Button>
         </div>
       </div>
-      
+
       <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm mb-6">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">Uso do Armazenamento</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              Uso do Armazenamento
+            </h3>
             <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
               <Shield className="h-5 w-5 text-indigo-600" />
             </div>
@@ -176,9 +187,14 @@ const VaultGrid = ({
           <div className="space-y-2">
             <div className="flex justify-between text-sm font-medium">
               <span className="text-gray-500">Espaço utilizado</span>
-              <span className="text-gray-900">{storagePercentage.toFixed(1)}%</span>
+              <span className="text-gray-900">
+                {storagePercentage.toFixed(1)}%
+              </span>
             </div>
-            <Progress value={storagePercentage} className="h-3 bg-gray-100 rounded-full" />
+            <Progress
+              value={storagePercentage}
+              className="h-3 bg-gray-100 rounded-full"
+            />
             <div className="flex justify-between text-xs text-gray-500">
               <span>{storageUsed} GB usado</span>
               <span>{storageLimit} GB total</span>
@@ -187,13 +203,29 @@ const VaultGrid = ({
           {storagePercentage > 80 && (
             <div className="mt-4 p-3 bg-yellow-50 border border-yellow-100 rounded-lg text-sm text-yellow-700 flex items-start">
               <div className="mr-2 mt-0.5">
-                <svg className="h-4 w-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                <svg
+                  className="h-4 w-4 text-yellow-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
                 </svg>
               </div>
               <div>
-                <p>Seu armazenamento está quase cheio. Considere fazer upgrade do seu plano para obter mais espaço.</p>
-                <Button variant="link" className="h-auto p-0 text-yellow-700 font-medium hover:text-yellow-800 mt-1">
+                <p>
+                  Seu armazenamento está quase cheio. Considere fazer upgrade do
+                  seu plano para obter mais espaço.
+                </p>
+                <Button
+                  variant="link"
+                  className="h-auto p-0 text-yellow-700 font-medium hover:text-yellow-800 mt-1"
+                >
                   Fazer upgrade
                 </Button>
               </div>
@@ -201,15 +233,19 @@ const VaultGrid = ({
           )}
         </div>
       </Card>
-      
+
       {filteredDocuments.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12">
           <div className="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
             <Lock className="h-8 w-8 text-gray-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-1">Nenhum documento protegido encontrado</h3>
-          <p className="text-sm text-gray-500">Adicione seus documentos importantes ao cofre para protegê-los</p>
-          <Button 
+          <h3 className="text-lg font-medium text-gray-900 mb-1">
+            Nenhum documento protegido encontrado
+          </h3>
+          <p className="text-sm text-gray-500">
+            Adicione seus documentos importantes ao cofre para protegê-los
+          </p>
+          <Button
             className="mt-4 rounded-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 flex items-center gap-2"
             onClick={onUpload}
           >
@@ -220,8 +256,8 @@ const VaultGrid = ({
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredDocuments.map((document) => (
-            <Card 
-              key={document.id} 
+            <Card
+              key={document.id}
               className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
               onClick={() => onDocumentClick(document)}
             >
@@ -232,7 +268,9 @@ const VaultGrid = ({
                       <Lock size={20} />
                     </div>
                     <div className="ml-3">
-                      <h3 className="font-medium text-gray-900 text-sm line-clamp-1">{document.title}</h3>
+                      <h3 className="font-medium text-gray-900 text-sm line-clamp-1">
+                        {document.title}
+                      </h3>
                       <div className="flex items-center text-xs text-gray-500 mt-1">
                         <span>{document.type}</span>
                         <span className="mx-2">•</span>
@@ -243,7 +281,9 @@ const VaultGrid = ({
                 </div>
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                   <div className="flex items-center">
-                    <span className="text-xs text-gray-500">Protegido em {document.protectedAt}</span>
+                    <span className="text-xs text-gray-500">
+                      Protegido em {document.protectedAt}
+                    </span>
                   </div>
                   <div className="flex items-center text-xs font-medium text-indigo-600">
                     <Lock className="h-3 w-3 mr-1" />
@@ -252,3 +292,11 @@ const VaultGrid = ({
                 </div>
               </div>
             </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default VaultGrid;

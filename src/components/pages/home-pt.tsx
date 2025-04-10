@@ -22,4 +22,10 @@ export default function PaginaInicial() {
 
   return (
     <SiteLayout>
-      {/*
+      <HeroSection />
+      <BenefitsSection />
+      <FeaturesSection />
+      <CtaSection />
+    </SiteLayout>
+  );
+}
