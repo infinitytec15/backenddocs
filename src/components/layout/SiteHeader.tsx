@@ -76,7 +76,7 @@ export function SiteHeader() {
               Benefícios
             </Link>
             <Link
-              to="/sobre"
+              to="/quem-somos"
               className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
             >
               Quem Somos
@@ -158,7 +158,7 @@ export function SiteHeader() {
                 Benefícios
               </Link>
               <Link
-                to="/sobre"
+                to="/quem-somos"
                 className="text-base font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
