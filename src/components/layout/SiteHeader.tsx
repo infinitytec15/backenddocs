@@ -43,12 +43,7 @@ export function SiteHeader() {
             >
               Funcionalidades
             </Link>
-            <Link
-              to="/planos"
-              className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
-            >
-              Planos
-            </Link>
+
             <Link
               to="/gamificacao"
               className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
@@ -116,13 +111,7 @@ export function SiteHeader() {
               >
                 Funcionalidades
               </Link>
-              <Link
-                to="/planos"
-                className="text-base font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Planos
-              </Link>
+
               <Link
                 to="/gamificacao"
                 className="text-base font-medium text-gray-700 dark:text-gray-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"

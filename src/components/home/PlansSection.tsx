@@ -129,7 +129,7 @@ export function PlansSection() {
 
         {/* Seleção de Período de Cobrança */}
         <div className="mb-12 flex flex-col items-center">
-          <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-xl inline-flex">
+          <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-xl inline-flex flex-wrap justify-center">
             <button
               onClick={() => setBillingPeriod("monthly")}
               className={`px-4 py-2 rounded-lg text-sm font-medium ${billingPeriod === "monthly" ? "bg-white dark:bg-gray-700 shadow-sm text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"}`}
@@ -158,7 +158,7 @@ export function PlansSection() {
         </div>
 
         {/* Planos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {plans.map((plan, index) => (
             <motion.div
               key={index}
@@ -171,14 +171,26 @@ export function PlansSection() {
                 <div
                   className={`absolute top-0 right-0 bg-${plan.color}-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-xl`}
                 >
-                  POPULAR
+                  MAIS VENDIDO
                 </div>
               )}
               <div className="p-6">
                 <div className="flex items-center mb-4">
                   <motion.div
                     whileHover={{ rotate: 5, scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    whileTap={{ scale: 0.95 }}
+                    animate={{ y: [0, -5, 0], rotate: [0, 2, 0] }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 10,
+                      y: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                      rotate: {
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      },
+                    }}
                     className={`rounded-full p-3 bg-${plan.color}-100 dark:bg-${plan.color}-900/30 mr-3`}
                   >
                     {plan.icon}
@@ -205,22 +217,34 @@ export function PlansSection() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/planos">
-                  <Button
-                    className={`w-full ${plan.popular ? `bg-${plan.color}-600 hover:bg-${plan.color}-700 text-white` : "bg-gray-900 dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 text-white"}`}
-                  >
-                    Escolher Plano
-                  </Button>
-                </Link>
+                <Button
+                  className={`w-full ${plan.popular ? `bg-${plan.color}-600 hover:bg-${plan.color}-700 text-white` : "bg-gray-900 dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 text-white"}`}
+                  onClick={() => (window.location.href = "/signup")}
+                >
+                  Escolher Plano
+                </Button>
               </div>
             </motion.div>
           ))}
         </div>
 
         {/* Custom Plan */}
-        <div className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-2xl p-8 text-center">
+        <div className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-2xl p-4 sm:p-8 text-center">
           <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
-            <MessageSquare className="h-8 w-8 text-green-600 dark:text-green-400" />
+            <motion.div
+              whileHover={{ rotate: 10, scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              animate={{ y: [0, -5, 0], rotate: [0, 5, 0] }}
+              transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 10,
+                y: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                rotate: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+              }}
+            >
+              <MessageSquare className="h-8 w-8 text-green-600 dark:text-green-400" />
+            </motion.div>
           </div>
           <h3 className="text-2xl font-bold mb-3">
             Precisa de um plano personalizado?
@@ -229,11 +253,12 @@ export function PlansSection() {
             Temos soluções sob medida para empresas de todos os tamanhos. Entre
             em contato conosco para discutir suas necessidades específicas.
           </p>
-          <Link to="/planos">
-            <Button className="bg-green-600 hover:bg-green-700 text-white">
-              Solicitar Proposta
-            </Button>
-          </Link>
+          <Button
+            className="bg-green-600 hover:bg-green-700 text-white"
+            onClick={() => (window.location.href = "/contato")}
+          >
+            Solicitar Proposta
+          </Button>
         </div>
       </div>
     </section>

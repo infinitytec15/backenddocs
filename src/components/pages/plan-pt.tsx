@@ -96,7 +96,7 @@ const Plan = () => {
   // Calculate price based on billing period
   const calculatePrice = (basePrice) => {
     const price = Math.round(basePrice * periodMultipliers[billingPeriod]);
-    return `R${price}`;
+    return `R$${price}`;
   };
 
   // Get period display text
@@ -264,30 +264,30 @@ const Plan = () => {
 
       {/* Plano Atual */}
       <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm mb-6">
-        <CardContent className="p-6">
+        <CardContent className="p-4 sm:p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
             <div>
-              <div className="flex items-center mb-2">
-                <h2 className="text-2xl font-bold text-gray-900 mr-2">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                   Plano {currentPlan.name}
                 </h2>
-                <Badge className="bg-green-100 text-green-700 border-green-200">
+                <Badge className="bg-green-100 text-green-700 border-green-200 px-2.5 py-0.5 rounded-full">
                   Ativo
                 </Badge>
               </div>
-              <p className="text-gray-500">
+              <p className="text-gray-500 text-sm sm:text-base">
                 {currentPlan.price}/{currentPlan.period} • Próxima cobrança em{" "}
                 {currentPlan.nextBillingDate}
               </p>
             </div>
-            <div className="flex mt-4 md:mt-0 space-x-3">
+            <div className="flex flex-wrap mt-4 md:mt-0 gap-3">
               <Button
                 variant="outline"
-                className="border-gray-200 text-gray-700 hover:bg-gray-50"
+                className="border-gray-200 text-gray-700 hover:bg-gray-50 text-sm sm:text-base w-full sm:w-auto"
               >
                 Cancelar Plano
               </Button>
-              <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+              <Button className="bg-blue-500 hover:bg-blue-600 text-white text-sm sm:text-base w-full sm:w-auto">
                 Alterar Plano
               </Button>
             </div>
@@ -297,7 +297,7 @@ const Plan = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Detalhes do Plano
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {currentPlan.features
                 .filter((feature) => typeof feature.used !== "undefined")
                 .map((feature, index) => (
@@ -318,7 +318,7 @@ const Plan = () => {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-6">
               {currentPlan.features
                 .filter((feature) => typeof feature.included !== "undefined")
                 .map((feature, index) => (
@@ -400,20 +400,20 @@ const Plan = () => {
                 {invoices.map((invoice, index) => (
                   <tr
                     key={index}
-                    className="border-b border-gray-100 hover:bg-gray-50"
+                    className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                   >
-                    <td className="py-3 px-4 text-sm text-gray-900">
+                    <td className="py-3 px-4 text-sm font-medium text-gray-900">
                       {invoice.id}
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-500">
                       {invoice.date}
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-900">
+                    <td className="py-3 px-4 text-sm font-medium text-gray-900">
                       {invoice.amount}
                     </td>
                     <td className="py-3 px-4">
                       <Badge
-                        className={`${invoice.status === "paid" ? "bg-green-100 text-green-700 border-green-200" : "bg-yellow-100 text-yellow-700 border-yellow-200"}`}
+                        className={`${invoice.status === "paid" ? "bg-green-100 text-green-700 border-green-200" : "bg-yellow-100 text-yellow-700 border-yellow-200"} px-2.5 py-0.5 rounded-full text-xs font-semibold`}
                       >
                         {invoice.status === "paid" ? "Pago" : "Pendente"}
                       </Badge>
@@ -422,7 +422,7 @@ const Plan = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-gray-500 hover:text-gray-700"
+                        className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full"
                       >
                         <Download className="h-4 w-4" />
                       </Button>
@@ -440,7 +440,7 @@ const Plan = () => {
         <h2 className="text-2xl font-bold text-gray-900 mb-6">
           Escolha seu plano ideal
         </h2>
-        <div className="bg-gray-100 p-1 rounded-xl inline-flex">
+        <div className="bg-gray-100 p-1 rounded-xl inline-flex flex-wrap justify-center">
           <button
             onClick={() => setBillingPeriod("monthly")}
             className={`px-4 py-2 rounded-lg text-sm font-medium ${billingPeriod === "monthly" ? "bg-white shadow-sm text-blue-600" : "text-gray-600 hover:text-gray-900"}`}
@@ -465,7 +465,7 @@ const Plan = () => {
       </div>
 
       {/* Planos Disponíveis */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 mb-12">
         {plans.map((plan, index) => (
           <motion.div
             key={index}
@@ -478,7 +478,7 @@ const Plan = () => {
               <div
                 className={`absolute top-0 right-0 bg-${plan.color}-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-xl`}
               >
-                POPULAR
+                MAIS VENDIDO
               </div>
             )}
             <div className="p-6">
@@ -492,7 +492,19 @@ const Plan = () => {
               <div className="flex items-center mb-4">
                 <motion.div
                   whileHover={{ rotate: 5, scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  whileTap={{ scale: 0.95 }}
+                  animate={{ y: [0, -5, 0], rotate: [0, 2, 0] }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 10,
+                    y: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                    rotate: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                  }}
                   className={`rounded-full p-3 bg-${plan.color}-100 mr-3`}
                 >
                   {plan.icon}
@@ -562,7 +574,7 @@ const Plan = () => {
           ) : (
             <form onSubmit={handleCustomFormSubmit}>
               <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-medium">
                       Nome
@@ -602,7 +614,7 @@ const Plan = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="company" className="text-sm font-medium">
                       Empresa
@@ -676,17 +688,18 @@ const Plan = () => {
                 </div>
               </div>
 
-              <DialogFooter>
+              <DialogFooter className="flex-col sm:flex-row gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setShowCustomForm(false)}
+                  className="w-full sm:w-auto"
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto"
                 >
                   <Send className="h-4 w-4 mr-2" />
                   Enviar Solicitação
