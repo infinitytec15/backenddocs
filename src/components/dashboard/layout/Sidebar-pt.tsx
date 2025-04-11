@@ -34,17 +34,50 @@ interface SidebarProps {
 }
 
 const defaultNavItems: NavItem[] = [
-  { icon: <LayoutDashboard size={20} />, label: "Dashboard", isActive: true },
-  { icon: <FileText size={20} />, label: "Meus Documentos" },
-  { icon: <FileSignature size={20} />, label: "Meus Contratos" },
-  { icon: <Shield size={20} />, label: "Cofre Digital" },
-  { icon: <Award size={20} />, label: "Gamificação" },
-  { icon: <CreditCard size={20} />, label: "Meu Plano" },
+  {
+    icon: <LayoutDashboard size={20} />,
+    label: "Dashboard",
+    isActive: true,
+    href: "/dashboard",
+  },
+  {
+    icon: <FileText size={20} />,
+    label: "Meus Documentos",
+    href: "/dashboard/documents",
+  },
+  {
+    icon: <FileSignature size={20} />,
+    label: "Meus Contratos",
+    href: "/dashboard/contracts",
+  },
+  {
+    icon: <Shield size={20} />,
+    label: "Cofre Digital",
+    href: "/dashboard/vault",
+  },
+  {
+    icon: <Award size={20} />,
+    label: "Gamificação",
+    href: "/dashboard/gamification",
+  },
+  {
+    icon: <CreditCard size={20} />,
+    label: "Meu Plano",
+    href: "/dashboard/plan",
+  },
 ];
 
 const defaultBottomItems: NavItem[] = [
-  { icon: <HelpCircle size={20} />, label: "Suporte" },
-  { icon: <Settings size={20} />, label: "Configurações" },
+  {
+    icon: <HelpCircle size={20} />,
+    label: "Suporte",
+    href: "/dashboard/support",
+  },
+  {
+    icon: <Settings size={20} />,
+    label: "Configurações",
+    href: "/dashboard/settings",
+  },
   { icon: <LogOut size={20} />, label: "Sair" },
 ];
 
@@ -91,11 +124,17 @@ const Sidebar = ({
     checkAffiliateStatus();
   }, [user, items]);
 
-  const handleItemSelection = (label: string) => {
+  const handleItemSelection = (label: string, href?: string) => {
     if (label === "Sair") {
       signOut();
       return;
     }
+
+    if (href) {
+      window.location.href = href;
+      return;
+    }
+
     onItemClick(label);
   };
 
@@ -117,7 +156,7 @@ const Sidebar = ({
               key={item.label}
               variant={"ghost"}
               className={`w-full justify-start gap-3 h-10 rounded-xl text-sm font-medium ${item.label === activeItem ? "bg-blue-50 text-blue-600 hover:bg-blue-100" : "text-gray-700 hover:bg-gray-100"}`}
-              onClick={() => handleItemSelection(item.label)}
+              onClick={() => handleItemSelection(item.label, item.href)}
             >
               <span
                 className={`${item.label === activeItem ? "text-blue-600" : "text-gray-500"}`}
@@ -165,7 +204,7 @@ const Sidebar = ({
             key={item.label}
             variant="ghost"
             className="w-full justify-start gap-3 h-10 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-100 mb-1.5"
-            onClick={() => handleItemSelection(item.label)}
+            onClick={() => handleItemSelection(item.label, item.href)}
           >
             <span
               className={`${item.label === "Sair" ? "text-red-500" : "text-gray-500"}`}

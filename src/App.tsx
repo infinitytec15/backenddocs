@@ -143,6 +143,64 @@ function AppRoutes() {
           }
         />
 
+        {/* Dashboard feature routes */}
+        <Route
+          path="/dashboard/documents"
+          element={
+            <PrivateRoute>
+              <RoleDashboard role="any" />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/contracts"
+          element={
+            <PrivateRoute>
+              <RoleDashboard role="any" />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/vault"
+          element={
+            <PrivateRoute>
+              <RoleDashboard role="any" />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/gamification"
+          element={
+            <PrivateRoute>
+              <RoleDashboard role="any" />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/plan"
+          element={
+            <PrivateRoute>
+              <RoleDashboard role="any" />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/support"
+          element={
+            <PrivateRoute>
+              <RoleDashboard role="any" />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/settings"
+          element={
+            <PrivateRoute>
+              <RoleDashboard role="any" />
+            </PrivateRoute>
+          }
+        />
+
         <Route path="/success" element={<Success />} />
       </Routes>
       {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}

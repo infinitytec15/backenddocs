@@ -61,55 +61,31 @@ export async function getAffiliateReferrals(): Promise<ReferralData[]> {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) return [];
 
-    // Get affiliate data first
-    const { data: affiliateData, error: affiliateError } = await supabase
-      .from("affiliates")
-      .select("id, referral_code")
-      .eq("user_id", userData.user.id)
-      .single();
-
-    if (affiliateError) throw affiliateError;
-
     // Get users who were referred by this affiliate
     const { data, error } = await supabase
-      .from("users")
+      .from("referrals")
       .select(
-        "id, email, full_name, created_at, subscription_plan_id, subscription_status",
+        `
+        id,
+        status,
+        created_at,
+        referred_user:referred_user_id(id, email, full_name),
+        plan:plan_id(id, name)
+      `,
       )
-      .eq("referred_by", userData.user.id);
+      .eq("referrer_id", userData.user.id)
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
 
-    // Get plan names
-    const planIds = data
-      .filter((user) => user.subscription_plan_id)
-      .map((user) => user.subscription_plan_id);
-
-    let planMap = {};
-    if (planIds.length > 0) {
-      const { data: plans, error: plansError } = await supabase
-        .from("plans")
-        .select("id, name")
-        .in("id", planIds);
-
-      if (!plansError && plans) {
-        planMap = plans.reduce((acc, plan) => {
-          acc[plan.id] = plan.name;
-          return acc;
-        }, {});
-      }
-    }
-
-    // Format the data
-    return data.map((user) => ({
-      id: user.id,
-      email: user.email,
-      full_name: user.full_name,
-      created_at: user.created_at,
-      plan: user.subscription_plan_id
-        ? planMap[user.subscription_plan_id]
-        : null,
-      status: user.subscription_status || "pending",
+    // Format the data for the frontend
+    return data.map((referral) => ({
+      id: referral.id,
+      email: referral.referred_user?.email || "Unknown",
+      full_name: referral.referred_user?.full_name || "Unknown User",
+      created_at: referral.created_at,
+      plan: referral.plan?.name || null,
+      status: referral.status || "pending",
     }));
   } catch (error) {
     console.error("Error fetching affiliate referrals:", error);
@@ -125,20 +101,11 @@ export async function getAffiliateTransactions(): Promise<TransactionData[]> {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) return [];
 
-    // Get affiliate data first
-    const { data: affiliateData, error: affiliateError } = await supabase
-      .from("affiliates")
-      .select("id")
-      .eq("user_id", userData.user.id)
-      .single();
-
-    if (affiliateError) throw affiliateError;
-
-    // Get transactions for this affiliate
+    // Get transactions for this user
     const { data, error } = await supabase
       .from("affiliate_transactions")
       .select("*")
-      .eq("affiliate_id", affiliateData.id)
+      .eq("user_id", userData.user.id)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -159,8 +126,12 @@ export async function registerAsAffiliate(): Promise<{
   data?: any;
 }> {
   try {
-    const { data, error } =
-      await supabase.functions.invoke("register_affiliate");
+    const { data, error } = await supabase.functions.invoke(
+      "register_affiliate",
+      {
+        body: {}, // The function will use the authenticated user from the request
+      },
+    );
 
     if (error) throw error;
 
@@ -242,6 +213,97 @@ export async function recordCommission(
     return {
       success: false,
       message: error.message || "Error recording commission",
+    };
+  }
+}
+
+/**
+ * Request a withdrawal of affiliate earnings
+ */
+export async function requestWithdrawal(
+  amount: number,
+  invoiceFileId: string,
+): Promise<{
+  success: boolean;
+  message: string;
+  data?: any;
+}> {
+  try {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) {
+      return { success: false, message: "User not authenticated", data: null };
+    }
+
+    // Call the RPC function to update the affiliate balance and create a withdrawal transaction
+    const { data, error } = await supabase.rpc(
+      "update_affiliate_balance_withdrawal",
+      {
+        p_user_id: userData.user.id,
+        p_amount: amount,
+        p_invoice_file_id: invoiceFileId,
+      },
+    );
+
+    if (error) throw error;
+
+    return {
+      success: true,
+      message: "Withdrawal request submitted successfully",
+      data,
+    };
+  } catch (error) {
+    console.error("Error requesting withdrawal:", error);
+    return {
+      success: false,
+      message: error.message || "Error requesting withdrawal",
+    };
+  }
+}
+
+/**
+ * Upload an invoice file for withdrawal
+ */
+export async function uploadInvoiceFile(
+  file: File,
+  onProgress?: (progress: number) => void,
+): Promise<{
+  success: boolean;
+  message: string;
+  fileId?: string;
+}> {
+  try {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) {
+      return { success: false, message: "User not authenticated" };
+    }
+
+    const fileName = `${userData.user.id}/${Date.now()}-${file.name}`;
+
+    const { data, error } = await supabase.storage
+      .from("invoices")
+      .upload(fileName, file, {
+        cacheControl: "3600",
+        upsert: false,
+        onUploadProgress: (progress) => {
+          if (onProgress) {
+            const percent = (progress.loaded / progress.total) * 100;
+            onProgress(percent);
+          }
+        },
+      });
+
+    if (error) throw error;
+
+    return {
+      success: true,
+      message: "File uploaded successfully",
+      fileId: data.path,
+    };
+  } catch (error) {
+    console.error("Error uploading invoice file:", error);
+    return {
+      success: false,
+      message: error.message || "Error uploading invoice file",
     };
   }
 }

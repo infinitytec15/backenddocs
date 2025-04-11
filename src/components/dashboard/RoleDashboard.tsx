@@ -4,6 +4,7 @@ import TopNavigation from "./layout/TopNavigation";
 import Sidebar from "./layout/Sidebar";
 import DashboardGrid from "./DashboardGrid";
 import TaskBoard from "./TaskBoard";
+import TrialNotification from "./TrialNotification";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -82,6 +83,9 @@ const RoleDashboard: React.FC<RoleDashboardProps> = ({ role = "user" }) => {
               "transition-all duration-300 ease-in-out",
             )}
           >
+            {/* Notificação de período de trial */}
+            <TrialNotification className="mb-6" />
+
             <DashboardGrid isLoading={isLoading} />
             <TaskBoard isLoading={isLoading} />
           </div>
