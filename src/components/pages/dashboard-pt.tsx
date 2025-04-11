@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import {
   BarChart,
   FileText,
@@ -20,6 +21,14 @@ import {
   AlertCircle,
   Users,
   Link as LinkIcon,
+  Upload,
+  DollarSign,
+  Zap,
+  ArrowUpRight,
+  ArrowDownRight,
+  BarChart3,
+  PieChart,
+  Sparkles,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import DocumentsGrid from "../dashboard/DocumentsGrid";
@@ -32,7 +41,7 @@ import { supabase } from "../../../supabase/supabase";
 const Dashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("resumo");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [isAffiliate, setIsAffiliate] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -73,17 +82,17 @@ const Dashboard = () => {
       </div>
 
       <Tabs
-        defaultValue="resumo"
+        defaultValue="dashboard"
         value={activeTab}
         onValueChange={handleTabChange}
         className="w-full"
       >
         <TabsList className="bg-white/90 backdrop-blur-md border border-gray-200 rounded-xl p-1 mb-6 overflow-x-auto flex-nowrap">
           <TabsTrigger
-            value="resumo"
+            value="dashboard"
             className="rounded-lg data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 py-2.5"
           >
-            Resumo
+            Dashboard
           </TabsTrigger>
           <TabsTrigger
             value="documentos"
@@ -103,6 +112,18 @@ const Dashboard = () => {
           >
             Cofre Digital
           </TabsTrigger>
+          <TabsTrigger
+            value="gamificacao"
+            className="rounded-lg data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 py-2.5"
+          >
+            Gamificação
+          </TabsTrigger>
+          <TabsTrigger
+            value="plano"
+            className="rounded-lg data-[state=active]:bg-blue-50 data-[state=active]:text-blue-600 py-2.5"
+          >
+            Meu Plano
+          </TabsTrigger>
           {isAffiliate && (
             <TabsTrigger
               value="afiliados"
@@ -113,14 +134,14 @@ const Dashboard = () => {
           )}
         </TabsList>
 
-        <TabsContent value="resumo" className="space-y-6">
-          {/* Estatísticas */}
+        <TabsContent value="dashboard" className="space-y-6">
+          {/* Cards de Resumo */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm">
+            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-medium text-gray-500">
-                    Documentos
+                    Total de Documentos
                   </h3>
                   <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                     <FileText className="h-5 w-5 text-blue-600" />
@@ -129,31 +150,27 @@ const Dashboard = () => {
                 <div className="text-3xl font-bold text-gray-900 mb-1">24</div>
                 <div className="text-sm text-gray-500 flex items-center">
                   <span className="text-green-500 flex items-center mr-1">
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 10l7-7m0 0l7 7m-7-7v18"
-                      />
-                    </svg>
+                    <ArrowUpRight className="h-3.5 w-3.5 mr-0.5" />
                     12%
                   </span>
-                  desde o mês passado
+                  <span>desde o mês passado</span>
                 </div>
+                <Button 
+                  variant="ghost" 
+                  className="w-full mt-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 text-sm p-0 h-auto"
+                  onClick={() => setActiveTab("documentos")}
+                >
+                  Ver todos
+                  <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                </Button>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm">
+            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-medium text-gray-500">
-                    Contratos
+                    Contratos Ativos
                   </h3>
                   <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
                     <FileSignature className="h-5 w-5 text-purple-600" />
@@ -162,30 +179,28 @@ const Dashboard = () => {
                 <div className="text-3xl font-bold text-gray-900 mb-1">8</div>
                 <div className="text-sm text-gray-500 flex items-center">
                   <span className="text-green-500 flex items-center mr-1">
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 10l7-7m0 0l7 7m-7-7v18"
-                      />
-                    </svg>
+                    <ArrowUpRight className="h-3.5 w-3.5 mr-0.5" />
                     5%
                   </span>
-                  desde o mês passado
+                  <span>desde o mês passado</span>
                 </div>
+                <Button 
+                  variant="ghost" 
+                  className="w-full mt-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 text-sm p-0 h-auto"
+                  onClick={() => setActiveTab("contratos")}
+                >
+                  Ver todos
+                  <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                </Button>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm">
+            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-500">Cofre</h3>
+                  <h3 className="text-sm font-medium text-gray-500">
+                    Documentos no Cofre
+                  </h3>
                   <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
                     <Shield className="h-5 w-5 text-indigo-600" />
                   </div>
@@ -193,30 +208,28 @@ const Dashboard = () => {
                 <div className="text-3xl font-bold text-gray-900 mb-1">5</div>
                 <div className="text-sm text-gray-500 flex items-center">
                   <span className="text-red-500 flex items-center mr-1">
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                      />
-                    </svg>
+                    <ArrowDownRight className="h-3.5 w-3.5 mr-0.5" />
                     2%
                   </span>
-                  desde o mês passado
+                  <span>desde o mês passado</span>
                 </div>
+                <Button 
+                  variant="ghost" 
+                  className="w-full mt-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 text-sm p-0 h-auto"
+                  onClick={() => setActiveTab("cofre")}
+                >
+                  Ver todos
+                  <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                </Button>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm">
+            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-gray-500">Pontos</h3>
+                  <h3 className="text-sm font-medium text-gray-500">
+                    Pontos Acumulados
+                  </h3>
                   <div className="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
                     <Award className="h-5 w-5 text-yellow-600" />
                   </div>
@@ -226,22 +239,126 @@ const Dashboard = () => {
                 </div>
                 <div className="text-sm text-gray-500 flex items-center">
                   <span className="text-green-500 flex items-center mr-1">
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 10l7-7m0 0l7 7m-7-7v18"
-                      />
-                    </svg>
+                    <ArrowUpRight className="h-3.5 w-3.5 mr-0.5" />
                     18%
                   </span>
-                  desde o mês passado
+                  <span>desde o mês passado</span>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  className="w-full mt-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 text-sm p-0 h-auto"
+                  onClick={() => setActiveTab("gamificacao")}
+                >
+                  Ver recompensas
+                  <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Botões de Ação Rápida */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white h-auto py-3 rounded-xl flex flex-col items-center justify-center gap-2">
+              <Upload className="h-5 w-5" />
+              <span className="text-sm font-medium">Upload Documento</span>
+            </Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white h-auto py-3 rounded-xl flex flex-col items-center justify-center gap-2">
+              <FileSignature className="h-5 w-5" />
+              <span className="text-sm font-medium">Criar Contrato</span>
+            </Button>
+            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white h-auto py-3 rounded-xl flex flex-col items-center justify-center gap-2">
+              <Shield className="h-5 w-5" />
+              <span className="text-sm font-medium">Proteger Arquivo</span>
+            </Button>
+            <Button className="bg-green-600 hover:bg-green-700 text-white h-auto py-3 rounded-xl flex flex-col items-center justify-center gap-2">
+              <LinkIcon className="h-5 w-5" />
+              <span className="text-sm font-medium">Indicar Amigo</span>
+            </Button>
+          </div>
+
+          {/* Gráficos e Estatísticas */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center justify-between">
+                  <span>Evolução de Documentos</span>
+                  <BarChart3 className="h-5 w-5 text-gray-400" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64 w-full flex items-center justify-center">
+                  <div className="w-full h-full flex items-end justify-between px-2">
+                    {[35, 45, 30, 50, 60, 40, 70].map((height, index) => (
+                      <div key={index} className="flex flex-col items-center">
+                        <div 
+                          className="w-10 bg-blue-500 rounded-t-md" 
+                          style={{ height: `${height * 2}px` }}
+                        ></div>
+                        <span className="text-xs text-gray-500 mt-2">{['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'][index]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-none">
+                      +24% este ano
+                    </Badge>
+                    <Badge className="bg-green-100 text-green-700 hover:bg-green-200 border-none">
+                      Meta atingida
+                    </Badge>
+                  </div>
+                  <Button variant="ghost" className="text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 p-0 h-auto">
+                    Ver detalhes
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center justify-between">
+                  <span>Status dos Contratos</span>
+                  <PieChart className="h-5 w-5 text-gray-400" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64 w-full flex items-center justify-center">
+                  <div className="relative h-40 w-40 rounded-full overflow-hidden flex items-center justify-center">
+                    <div className="absolute inset-0">
+                      <div className="h-full w-full bg-gray-100 flex">
+                        <div className="h-full w-[60%] bg-green-500"></div>
+                        <div className="h-full w-[25%] bg-yellow-500"></div>
+                        <div className="h-full w-[15%] bg-red-500"></div>
+                      </div>
+                    </div>
+                    <div className="absolute inset-[15%] bg-white rounded-full flex items-center justify-center">
+                      <span className="text-lg font-bold text-gray-900">8</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 mt-4">
+                  <div className="flex flex-col items-center p-2 rounded-lg bg-gray-50">
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-green-500"></div>
+                      <span className="text-sm font-medium text-gray-900">Assinados</span>
+                    </div>
+                    <span className="text-xl font-bold text-gray-900 mt-1">5</span>
+                  </div>
+                  <div className="flex flex-col items-center p-2 rounded-lg bg-gray-50">
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+                      <span className="text-sm font-medium text-gray-900">Pendentes</span>
+                    </div>
+                    <span className="text-xl font-bold text-gray-900 mt-1">2</span>
+                  </div>
+                  <div className="flex flex-col items-center p-2 rounded-lg bg-gray-50">
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                      <span className="text-sm font-medium text-gray-900">Expirados</span>
+                    </div>
+                    <span className="text-xl font-bold text-gray-900 mt-1">1</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -251,8 +368,11 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm lg:col-span-2">
               <CardHeader className="pb-2">
-                <CardTitle className="text-xl font-semibold text-gray-900">
-                  Atividade Recente
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center justify-between">
+                  <span>Atividade Recente</span>
+                  <Button variant="outline" size="sm" className="h-8 text-xs">
+                    <Clock className="h-3.5 w-3.5 mr-1" /> Últimas 24h
+                  </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -315,305 +435,3 @@ const Dashboard = () => {
                     </div>
                   ))}
                 </div>
-                <Button
-                  variant="ghost"
-                  className="w-full mt-4 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                >
-                  Ver todas as atividades
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xl font-semibold text-gray-900">
-                  Armazenamento
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="font-medium text-gray-900">
-                        Uso Total
-                      </span>
-                      <span className="text-gray-500">12.5 GB / 20 GB</span>
-                    </div>
-                    <Progress value={62.5} className="h-2 bg-gray-100" />
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
-                          <FileText className="h-4 w-4 text-blue-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">
-                            Documentos
-                          </p>
-                          <p className="text-xs text-gray-500">24 arquivos</p>
-                        </div>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">
-                        5.2 GB
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 rounded-lg bg-purple-100 flex items-center justify-center mr-3">
-                          <FileSignature className="h-4 w-4 text-purple-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">
-                            Contratos
-                          </p>
-                          <p className="text-xs text-gray-500">8 arquivos</p>
-                        </div>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">
-                        2.8 GB
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 rounded-lg bg-indigo-100 flex items-center justify-center mr-3">
-                          <Shield className="h-4 w-4 text-indigo-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">
-                            Cofre Digital
-                          </p>
-                          <p className="text-xs text-gray-500">5 arquivos</p>
-                        </div>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">
-                        4.5 GB
-                      </span>
-                    </div>
-                  </div>
-
-                  <Button
-                    variant="outline"
-                    className="w-full border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
-                  >
-                    Fazer upgrade
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Próximos Eventos e Tarefas */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xl font-semibold text-gray-900">
-                  Próximos Eventos
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[
-                    {
-                      title: "Renovação de Contrato",
-                      date: "20 Jun, 2024",
-                      time: "14:00",
-                      icon: <Calendar className="h-4 w-4 text-blue-500" />,
-                    },
-                    {
-                      title: "Vencimento de Documento",
-                      date: "25 Jun, 2024",
-                      time: "00:00",
-                      icon: <Clock className="h-4 w-4 text-red-500" />,
-                    },
-                    {
-                      title: "Webinar: Segurança Digital",
-                      date: "30 Jun, 2024",
-                      time: "16:30",
-                      icon: <Calendar className="h-4 w-4 text-green-500" />,
-                    },
-                  ].map((event, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start p-3 hover:bg-gray-50 rounded-xl transition-colors"
-                    >
-                      <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center mr-3">
-                        {event.icon}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {event.title}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {event.date} • {event.time}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Button
-                  variant="ghost"
-                  className="w-full mt-4 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                >
-                  Ver calendário completo
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/90 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xl font-semibold text-gray-900">
-                  Tarefas Pendentes
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[
-                    {
-                      title: "Revisar Contrato de Aluguel",
-                      dueDate: "Hoje",
-                      priority: "Alta",
-                      status: "pending",
-                    },
-                    {
-                      title: "Assinar Acordo de Confidencialidade",
-                      dueDate: "Amanhã",
-                      priority: "Média",
-                      status: "pending",
-                    },
-                    {
-                      title: "Atualizar Documentos Pessoais",
-                      dueDate: "23 Jun",
-                      priority: "Baixa",
-                      status: "completed",
-                    },
-                  ].map((task, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center p-3 hover:bg-gray-50 rounded-xl transition-colors"
-                    >
-                      <div className="mr-3">
-                        {task.status === "completed" ? (
-                          <CheckCircle className="h-5 w-5 text-green-500" />
-                        ) : (
-                          <AlertCircle className="h-5 w-5 text-yellow-500" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p
-                          className={`text-sm font-medium ${task.status === "completed" ? "text-gray-500 line-through" : "text-gray-900"}`}
-                        >
-                          {task.title}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Vence: {task.dueDate} • Prioridade: {task.priority}
-                        </p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 rounded-full hover:bg-gray-200"
-                      >
-                        <svg
-                          className="h-4 w-4 text-gray-500"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                          />
-                        </svg>
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex mt-4">
-                  <Button className="flex-1 mr-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl">
-                    <Plus className="h-4 w-4 mr-1" /> Nova Tarefa
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="flex-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl"
-                  >
-                    Ver Todas
-                    <ChevronRight className="h-4 w-4 ml-1" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="documentos">
-          <DocumentsGrid />
-        </TabsContent>
-
-        <TabsContent value="contratos">
-          <ContractsGrid />
-        </TabsContent>
-
-        <TabsContent value="cofre">
-          <VaultGrid />
-        </TabsContent>
-
-        <TabsContent value="afiliados">
-          {isAffiliate ? (
-            <AffiliateDashboard />
-          ) : (
-            <div className="bg-yellow-50 text-yellow-700 p-6 rounded-lg text-center">
-              <AlertCircle className="h-12 w-12 mx-auto mb-4 text-yellow-500" />
-              <h3 className="text-lg font-semibold mb-2">
-                Você ainda não é um afiliado
-              </h3>
-              <p className="mb-4">
-                Torne-se um afiliado para começar a ganhar comissões indicando
-                novos usuários.
-              </p>
-              <Button
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={async () => {
-                  try {
-                    const { data, error } = await supabase
-                      .from("users")
-                      .update({ is_affiliate: true })
-                      .eq("id", user?.id)
-                      .select();
-
-                    if (error) throw error;
-                    setIsAffiliate(true);
-                    toast({
-                      title: "Sucesso!",
-                      description: "Você agora é um afiliado.",
-                      duration: 3000,
-                    });
-                  } catch (error) {
-                    console.error("Error registering as affiliate:", error);
-                    toast({
-                      title: "Erro",
-                      description:
-                        "Erro ao registrar como afiliado. Tente novamente.",
-                      variant: "destructive",
-                    });
-                  }
-                }}
-              >
-                Tornar-se Afiliado
-              </Button>
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
-    </DashboardLayout>
-  );
-};
-
-export default Dashboard;

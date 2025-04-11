@@ -17,8 +17,14 @@ import { Toaster } from "./components/ui/toaster";
 import { LoadingScreen, LoadingSpinner } from "./components/ui/loading-spinner";
 import { isTrialPeriodOver, hasActiveSubscription } from "./lib/api/user-plans";
 
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+function PrivateRoute({
+  children,
+  requiredRole = "any",
+}: {
+  children: React.ReactNode;
+  requiredRole?: string;
+}) {
+  const { user, loading, userRole } = useAuth();
   const [checkingSubscription, setCheckingSubscription] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
 
@@ -70,8 +76,22 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/success?subscription=required" />;
   }
 
+  // Check if user has the required role
+  if (requiredRole !== "any" && userRole !== requiredRole) {
+    if (userRole === "admin" || userRole === "superadmin") {
+      // Admins and superadmins can access any dashboard
+      return <>{children}</>;
+    }
+
+    // Redirect to the appropriate dashboard based on role
+    return <Navigate to={`/dashboard/${userRole}`} />;
+  }
+
   return <>{children}</>;
 }
+
+// Import the RoleDashboard component
+import RoleDashboard from "./components/dashboard/RoleDashboard";
 
 function AppRoutes() {
   return (
@@ -86,14 +106,43 @@ function AppRoutes() {
         <Route path="/contato" element={<ContatoPt />} />
         <Route path="/quem-somos" element={<QuemSomosPt />} />
         <Route path="/afiliados" element={<AffiliateProgramPt />} />
+
+        {/* Default dashboard route - redirects to role-specific dashboard */}
         <Route
           path="/dashboard"
           element={
             <PrivateRoute>
-              <Dashboard />
+              <RoleDashboard role="any" />
             </PrivateRoute>
           }
         />
+
+        {/* Role-specific dashboard routes */}
+        <Route
+          path="/dashboard/user"
+          element={
+            <PrivateRoute requiredRole="user">
+              <RoleDashboard role="user" />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/admin"
+          element={
+            <PrivateRoute requiredRole="admin">
+              <RoleDashboard role="admin" />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/superadmin"
+          element={
+            <PrivateRoute requiredRole="superadmin">
+              <RoleDashboard role="superadmin" />
+            </PrivateRoute>
+          }
+        />
+
         <Route path="/success" element={<Success />} />
       </Routes>
       {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}

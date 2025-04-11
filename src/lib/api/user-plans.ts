@@ -21,22 +21,28 @@ export interface User {
 export async function createUserPlan(
   userId: string,
   planId: string,
+  startDate?: string,
+  endDate?: string,
   status: string = "active",
   autoRenew: boolean = true,
 ): Promise<UserPlan | null> {
-  const startDate = new Date().toISOString();
+  const now = startDate || new Date().toISOString();
 
-  // Calculate end date (30 days from now)
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + 30);
+  // Calculate end date (30 days from now) if not provided
+  let finalEndDate = endDate;
+  if (!finalEndDate) {
+    const endDateObj = new Date();
+    endDateObj.setDate(endDateObj.getDate() + 30);
+    finalEndDate = endDateObj.toISOString();
+  }
 
   const { data, error } = await supabase
     .from("user_plans")
     .insert({
       user_id: userId,
       plan_id: planId,
-      start_date: startDate,
-      end_date: endDate.toISOString(),
+      start_date: now,
+      end_date: finalEndDate,
       status: status,
       auto_renew: autoRenew,
     })

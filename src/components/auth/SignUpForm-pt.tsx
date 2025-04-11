@@ -27,11 +27,10 @@ export default function SignUpFormPt() {
       await signUp(email, password, fullName);
       toast({
         title: "Conta criada com sucesso",
-        description:
-          "Por favor, verifique seu e-mail para confirmar sua conta.",
+        description: "Bem-vindo ao seu painel!",
         duration: 5000,
       });
-      navigate("/login");
+      navigate("/dashboard");
     } catch (error: any) {
       console.error("Erro ao criar conta:", error);
       if (error?.message?.includes("roles")) {

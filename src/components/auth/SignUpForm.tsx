@@ -32,10 +32,10 @@ export default function SignUpForm() {
       await signUp(email, password, fullName);
       toast({
         title: "Account created successfully",
-        description: "Please check your email to verify your account.",
+        description: "Welcome to your dashboard!",
         duration: 5000,
       });
-      navigate("/login");
+      navigate("/dashboard");
     } catch (error: any) {
       console.error("Error creating account:", error);
       if (error?.message?.includes("roles")) {
@@ -66,10 +66,10 @@ export default function SignUpForm() {
       toast({
         title: "Affiliate account created successfully",
         description:
-          "Please check your email to verify your account. You'll be notified when your affiliate status is approved.",
+          "Welcome to your dashboard! You'll be notified when your affiliate status is approved.",
         duration: 5000,
       });
-      navigate("/login");
+      navigate("/dashboard");
     } catch (error: any) {
       console.error("Error creating affiliate account:", error);
       if (error?.message?.includes("roles")) {
