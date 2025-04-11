@@ -151,7 +151,6 @@ function AuthProviderComponent({ children }: { children: React.ReactNode }) {
             endDate.toISOString(),
             "active",
             false, // No auto-renew for trial
-            true, // is_trial
           );
 
           console.log(
@@ -176,14 +175,57 @@ function AuthProviderComponent({ children }: { children: React.ReactNode }) {
     if (error) throw error;
 
     if (data.user) {
-      // Fetch user role from user_settings
-      const { data: userSettings } = await supabase
-        .from("user_settings")
-        .select("role")
-        .eq("user_id", data.user.id)
-        .single();
+      try {
+        console.log("User signed in successfully:", data.user.id);
 
-      setUserRole(userSettings?.role || "user");
+        // Ensure user record exists in the users table
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("id")
+          .eq("id", data.user.id)
+          .single();
+
+        if (userError) {
+          console.log("Creating user record in users table for", data.user.id);
+          await supabase.from("users").insert({
+            id: data.user.id,
+            email: data.user.email,
+            full_name: data.user.user_metadata?.full_name || "",
+            signup_date: new Date().toISOString(),
+          });
+        }
+
+        // Fetch user role from user_settings
+        const { data: userSettings, error: settingsError } = await supabase
+          .from("user_settings")
+          .select("role, theme, language, notifications_enabled")
+          .eq("user_id", data.user.id)
+          .single();
+
+        if (settingsError) {
+          console.error(
+            "Error fetching user settings, creating default settings:",
+            settingsError,
+          );
+          // Create user settings if they don't exist
+          await supabase.from("user_settings").insert({
+            user_id: data.user.id,
+            role: "user",
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            theme: "light",
+            language: "pt-BR",
+            notifications_enabled: true,
+          });
+          setUserRole("user");
+        } else {
+          console.log("User settings found:", userSettings);
+          setUserRole(userSettings?.role || "user");
+        }
+      } catch (settingsError) {
+        console.error("Error in user settings flow:", settingsError);
+        setUserRole("user"); // Default to user role if there's an error
+      }
     }
   };
 

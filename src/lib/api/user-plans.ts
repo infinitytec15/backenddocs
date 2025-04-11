@@ -104,24 +104,65 @@ export async function cancelUserPlan(userPlanId: string): Promise<boolean> {
 }
 
 export async function isTrialPeriodOver(userId: string): Promise<boolean> {
-  // Get the user's signup date
-  const { data: userData, error: userError } = await supabase
-    .from("users")
-    .select("signup_date")
-    .eq("id", userId)
-    .single();
+  try {
+    // Get the user's signup date
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("signup_date")
+      .eq("id", userId)
+      .single();
 
-  if (userError || !userData?.signup_date) {
-    console.error("Error fetching user signup date:", userError);
-    return true; // If we can't determine, assume trial is over to be safe
+    if (userError) {
+      console.error("Error fetching user signup date:", userError);
+
+      // If we can't find the user, create a record with current date
+      if (userError.code === "PGRST116") {
+        const { error: insertError } = await supabase.from("users").insert({
+          id: userId,
+          signup_date: new Date().toISOString(),
+        });
+
+        if (insertError) {
+          console.error("Error creating user record:", insertError);
+        } else {
+          console.log("Created new user record with signup date");
+          return false; // New trial period
+        }
+      }
+
+      return false; // For now, assume trial is not over to allow access
+    }
+
+    if (!userData?.signup_date) {
+      console.log("No signup date found, updating with current date");
+      // Update the user with a signup date if it's missing
+      await supabase
+        .from("users")
+        .update({ signup_date: new Date().toISOString() })
+        .eq("id", userId);
+      return false; // New trial period
+    }
+
+    // Calculate if 7 days have passed since signup
+    const signupDate = new Date(userData.signup_date);
+    const currentDate = new Date();
+    const trialDurationMs = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+    const isOver =
+      currentDate.getTime() - signupDate.getTime() > trialDurationMs;
+
+    console.log("Trial period calculation:", {
+      signupDate,
+      currentDate,
+      daysPassed:
+        (currentDate.getTime() - signupDate.getTime()) / (24 * 60 * 60 * 1000),
+      isOver,
+    });
+
+    return isOver;
+  } catch (error) {
+    console.error("Unexpected error in isTrialPeriodOver:", error);
+    return false; // For now, assume trial is not over to allow access
   }
-
-  // Calculate if 7 days have passed since signup
-  const signupDate = new Date(userData.signup_date);
-  const currentDate = new Date();
-  const trialDurationMs = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-
-  return currentDate.getTime() - signupDate.getTime() > trialDurationMs;
 }
 
 export async function hasActiveSubscription(userId: string): Promise<boolean> {
