@@ -1,4 +1,12 @@
+-- Ensure uuid-ossp extension is available
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Create referrals table if it doesn't exist yet
+DROP TABLE IF EXISTS affiliate_transactions;
+DROP TABLE IF EXISTS affiliate_withdrawals;
+DROP TABLE IF EXISTS affiliate_balances;
+DROP TABLE IF EXISTS referrals;
+
 CREATE TABLE IF NOT EXISTS referrals (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   referrer_id UUID NOT NULL REFERENCES users(id),

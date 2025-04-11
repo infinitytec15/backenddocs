@@ -29,10 +29,12 @@ export default function SignUpForm() {
     setError("");
 
     try {
+      // Create user account with trial plan
       await signUp(email, password, fullName);
+
       toast({
         title: "Account created successfully",
-        description: "Welcome to your dashboard!",
+        description: "Welcome to your dashboard! Your 7-day trial has started.",
         duration: 5000,
       });
       navigate("/dashboard");

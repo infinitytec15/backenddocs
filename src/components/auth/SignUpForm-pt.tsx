@@ -24,10 +24,13 @@ export default function SignUpFormPt() {
     setError("");
 
     try {
+      // Create user account with trial plan
       await signUp(email, password, fullName);
+
       toast({
         title: "Conta criada com sucesso",
-        description: "Bem-vindo ao seu painel!",
+        description:
+          "Bem-vindo ao seu painel! Seu período de avaliação de 7 dias começou.",
         duration: 5000,
       });
       navigate("/dashboard");

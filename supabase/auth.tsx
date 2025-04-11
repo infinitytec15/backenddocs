@@ -100,13 +100,38 @@ function AuthProviderComponent({ children }: { children: React.ReactNode }) {
         const signupDate = new Date().toISOString();
         await supabase
           .from("users")
-          .update({ signup_date: signupDate })
+          .update({
+            signup_date: signupDate,
+            email: email,
+            full_name: fullName,
+          })
           .eq("id", data.user.id);
 
         // Create user_settings entry with default role 'user'
         await supabase.from("user_settings").insert({
           user_id: data.user.id,
           role: "user",
+          created_at: new Date().toISOString(),
+          theme: "light",
+          language: "pt-BR",
+          notifications_enabled: true,
+        });
+
+        // Log the user creation activity
+        await supabase.from("activity_logs").insert({
+          user_id: data.user.id,
+          activity_type: "user_created",
+          description: "Usuário criado com sucesso",
+          created_at: new Date().toISOString(),
+        });
+
+        // Create notification for welcome
+        await supabase.from("notifications").insert({
+          user_id: data.user.id,
+          title: "Bem-vindo ao DocSafe Brasil",
+          message:
+            "Obrigado por se cadastrar! Seu período de avaliação de 7 dias começou.",
+          is_read: false,
           created_at: new Date().toISOString(),
         });
 
@@ -119,15 +144,19 @@ function AuthProviderComponent({ children }: { children: React.ReactNode }) {
           const endDate = new Date(startDate);
           endDate.setDate(startDate.getDate() + 7); // 7-day trial
 
-          await createUserPlan(
+          const userPlan = await createUserPlan(
             data.user.id,
             defaultPlanId,
             startDate.toISOString(),
             endDate.toISOString(),
+            "active",
+            false, // No auto-renew for trial
+            true, // is_trial
           );
 
           console.log(
             `User ${data.user.id} subscribed to default plan ${defaultPlanId} with 7-day trial`,
+            userPlan,
           );
         } else {
           console.warn("No default plan found for automatic subscription");
